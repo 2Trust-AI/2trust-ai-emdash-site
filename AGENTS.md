@@ -66,12 +66,13 @@ Never build custom D1 handlers, raw fetch endpoints, or bypass `@emdash-cms/plug
 
 1. Go to `/_emdash/admin` → Forms → create a new form with the required fields
 2. Note the form slug (e.g. `demo-request`)
-3. In the HTML form:
-   ```html
-   <form method="post" action="/_emdash/forms/submit">
-     <input type="hidden" name="formId" value="demo-request" />
-     <!-- fields -->
-   </form>
+3. The plugin route only parses JSON — use `fetch` with `Content-Type: application/json`, NOT a plain HTML form POST:
+   ```javascript
+   fetch('/_emdash/api/plugins/emdash-forms/submit', {
+     method: 'POST',
+     headers: { 'Content-Type': 'application/json' },
+     body: JSON.stringify({ formId: 'demo-request', data: { field1: value1, ... } }),
+   });
    ```
 
 The forms plugin is already registered in `astro.config.mjs`. All that's needed is the form definition in the admin. If admin access is unavailable, document the manual step in a TODO comment — do not build a parallel system.
