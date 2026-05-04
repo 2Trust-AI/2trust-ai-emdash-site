@@ -1,5 +1,5 @@
 ---
-import { getSiteSettings } from "emdash";
+import { getSiteSettings, getMenu } from "emdash";
 import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
 import { Font } from "astro:assets";
@@ -54,14 +54,10 @@ const pageCtx = createPublicPageContext({
 
 const isLoggedIn = !!Astro.locals.user;
 const path = new URL(Astro.request.url).pathname;
-const navLinks: Array<[string, string]> = [
-	["/platform", "Platform"],
-	["/solutions", "Solutions"],
-	["/governance", "Governance"],
-	["/developers", "Developers"],
-	["/pricing", "Pricing"],
-	["/about", "About"],
-];
+const primaryMenu = await getMenu("primary");
+const navLinks: Array<[string, string]> = primaryMenu?.items.map(
+	(item) => [item.url, item.label] as [string, string]
+) ?? [];
 
 function isActive(href: string) {
 	if (href === "/") return path === "/";
