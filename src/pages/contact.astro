@@ -28,13 +28,12 @@ const error = Astro.url.searchParams.get("error");
 				</div>
 			) : (
 				<form
+					id="demo-form"
 					class="card"
 					style="margin-top:32px;display:grid;gap:16px;"
-					method="post"
-					action="/_emdash/api/plugins/emdash-forms/submit"
 					novalidate
 				>
-					<input type="hidden" name="formId" value="demo-request" />
+					<p id="form-error" style="color:#e53e3e;font-size:14px;margin:0;display:none;">Something went wrong. Please try again.</p>
 					{error && (
 						<p style="color:#e53e3e;font-size:14px;margin:0;">Something went wrong. Please try again.</p>
 					)}
@@ -51,7 +50,7 @@ const error = Astro.url.searchParams.get("error");
 						<textarea class="pb-input" name="what_are_you_governing" rows="4" placeholder="Model, deployment, audience, any regulators involved."></textarea>
 					</div>
 					<div style="display:flex;gap:10px;align-items:center;">
-						<button type="submit" class="btn btn-primary btn-lg">
+						<button id="submit-btn" type="submit" class="btn btn-primary btn-lg">
 							Request demo
 							<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
 						</button>
@@ -62,3 +61,40 @@ const error = Astro.url.searchParams.get("error");
 		</div>
 	</section>
 </Base>
+
+<script>
+	const form = document.getElementById('demo-form') as HTMLFormElement | null;
+	const btn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+	const errEl = document.getElementById('form-error') as HTMLElement | null;
+
+	form?.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		if (!btn) return;
+
+		btn.disabled = true;
+		btn.textContent = 'Sending…';
+		if (errEl) errEl.style.display = 'none';
+
+		const fd = new FormData(form);
+		const data: Record<string, string> = {};
+		fd.forEach((v, k) => { data[k] = v.toString(); });
+
+		try {
+			const resp = await fetch('/_emdash/api/plugins/emdash-forms/submit', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ formId: 'demo-request', data }),
+			});
+
+			if (resp.ok) {
+				window.location.href = '/contact?success=1';
+			} else {
+				throw new Error('submit failed');
+			}
+		} catch {
+			if (errEl) errEl.style.display = 'block';
+			btn.disabled = false;
+			btn.textContent = 'Request demo';
+		}
+	});
+</script>
