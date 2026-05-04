@@ -6,7 +6,6 @@ import { webhookNotifierPlugin } from "@emdash-cms/plugin-webhook-notifier";
 import resendPlugin from "emdash-plugin-resend";
 import { defineConfig, fontProviders } from "astro/config";
 import emdash from "emdash/astro";
-import { gtmPlugin } from "./src/plugins/gtm.js";
 
 export default defineConfig({
 	output: "server",
@@ -20,7 +19,7 @@ export default defineConfig({
 		emdash({
 			database: d1({ binding: "DB", session: "auto" }),
 			storage: r2({ binding: "MEDIA" }),
-			plugins: [formsPlugin(), resendPlugin(), gtmPlugin()],
+			plugins: [formsPlugin(), resendPlugin()],
 			sandboxed: [webhookNotifierPlugin()],
 			sandboxRunner: sandbox(),
 			marketplace: "https://marketplace.emdashcms.com",
