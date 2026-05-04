@@ -1,0 +1,117 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+
+<Base
+	title="Enterprise IT — 2Trust.AI"
+	description="One control plane for every AI deployment — OpenAI, Anthropic, Bedrock, or local LLMs. Multi-tenant, provider-agnostic, audit-ready."
+>
+	<section class="section" style="padding-bottom:40px;">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> Solutions / Enterprise IT</div>
+			<h1 class="h-1" style="margin:18px 0 14px;max-width:22ch;">
+				One control plane for every AI deployment.
+			</h1>
+			<p class="lede">
+				Enterprise IT teams are managing an AI sprawl problem. Different teams have adopted different models from different providers with different data handling guarantees. 2Trust.AI is the single governance layer that sees all of it, controls all of it, and produces evidence for anyone who asks.
+			</p>
+			<div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap;">
+				<a href="/contact" class="btn btn-primary">Book a demo <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></a>
+				<a href="/solutions" class="btn btn-quiet">All verticals</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> The challenge</div>
+			<h2 class="h-2" style="margin:14px 0 32px;max-width:28ch;">AI sprawl is an IT governance problem disguised as a productivity win.</h2>
+			<div class="grid-3">
+				<div class="card">
+					<h4 style="margin:0 0 10px;">Shadow AI adoption</h4>
+					<p class="small">Teams deploy AI tools without IT's knowledge. Finance is on one model, engineering on another, HR on a third. Each has different data handling, different logging, and different security postures. Nobody has the full picture.</p>
+				</div>
+				<div class="card">
+					<h4 style="margin:0 0 10px;">Provider lock-in pressure</h4>
+					<p class="small">Building directly against OpenAI, Anthropic, or Bedrock APIs means your applications are tightly coupled to one provider's pricing, availability, and data policies. Switching costs are high. Negotiating leverage is low.</p>
+				</div>
+				<div class="card">
+					<h4 style="margin:0 0 10px;">Board-level AI risk questions</h4>
+					<p class="small">Boards and audit committees are asking CISOs and CIOs to quantify AI risk. Without a central governance layer, the honest answer is "we don't know" — which is not an acceptable answer in 2026.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> How 2Trust.AI helps</div>
+			<h2 class="h-2" style="margin:14px 0 32px;max-width:28ch;">One integration surface, any provider, complete visibility.</h2>
+			<div class="grid-3">
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">MODEL ABSTRACTION LAYER</div>
+					<h4 style="margin:0 0 10px;">Provider-agnostic proxy</h4>
+					<p class="small">Teams call one unified API. 2Trust routes to OpenAI, Anthropic, AWS Bedrock, Azure OpenAI, Google Vertex, or local models based on policy. Provider swaps happen at the config layer — application code doesn't change.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">MULTI-TENANT ORGS</div>
+					<h4 style="margin:0 0 10px;">Department-level isolation</h4>
+					<p class="small">Parent/child org structure gives each business unit its own policy domain, its own allowed model list, and its own audit log — while the CISO retains visibility across all of them from the parent org dashboard.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">MCP INTEGRATION</div>
+					<h4 style="margin:0 0 10px;">Governed tool use</h4>
+					<p class="small">Service accounts for AI agents with scoped permissions. MCP-compatible tool registration with the same disallowed-list engine and audit logging that applies to human prompts. Agentic AI under policy, not just human AI.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">RISK SCORING DASHBOARD</div>
+					<h4 style="margin:0 0 10px;">Board-ready AI risk posture</h4>
+					<p class="small">Six-category risk scoring across all AI usage, aggregated by org, team, and use case. Export to PDF for audit committee packets. Answer "what is our AI risk?" with data, not anecdote.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">LOCAL LLM RUNTIME</div>
+					<h4 style="margin:0 0 10px;">Bring your own model</h4>
+					<p class="small">Run FP16/INT8 quantized open-source models on your own hardware or cloud instances for sensitive workloads. 2Trust governs them identically to commercial APIs — same logging, same filters, zero external calls.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">GOVERNANCE WIZARDS</div>
+					<h4 style="margin:0 0 10px;">AI inventory & risk register</h4>
+					<p class="small">Wizard-driven discovery and classification of your AI use cases against EU AI Act and NIST AI RMF frameworks. Produces a structured AI inventory and risk register — the starting point for every board AI governance conversation.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container" style="max-width:860px;">
+			<div class="kpi-row">
+				<div class="kpi-item">
+					<div class="mono" style="font-size:36px;letter-spacing:-.03em;color:var(--ink);">1</div>
+					<div class="small">integration surface for all AI providers</div>
+				</div>
+				<div class="kpi-item">
+					<div class="mono" style="font-size:36px;letter-spacing:-.03em;color:var(--ink);">Any</div>
+					<div class="small">LLM provider or local model supported</div>
+				</div>
+				<div class="kpi-item">
+					<div class="mono" style="font-size:36px;letter-spacing:-.03em;color:var(--ink);">100%</div>
+					<div class="small">AI usage visible from one dashboard</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container" style="max-width:680px;text-align:center;">
+			<h2 class="h-2" style="margin:0 0 16px;">Ready to consolidate your AI governance?</h2>
+			<p style="color:var(--ink-muted);margin:0 0 28px;">We'll audit your current AI surface, count the providers, and show you what centralized governance looks like in a 2–4 week pilot.</p>
+			<a href="/contact" class="btn btn-primary btn-lg">Book a demo <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></a>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; }
+	.kpi-item { display:flex; flex-direction:column; gap:6px; }
+	@media(max-width:600px){ .kpi-row{grid-template-columns:1fr 1fr;} }
+</style>

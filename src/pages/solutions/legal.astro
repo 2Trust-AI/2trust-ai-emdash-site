@@ -1,0 +1,117 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+
+<Base
+	title="Legal — 2Trust.AI"
+	description="Privilege-aware AI governance for law firms and in-house teams. Matter-scoped data isolation, conflict checking, and full audit trail."
+>
+	<section class="section" style="padding-bottom:40px;">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> Solutions / Legal</div>
+			<h1 class="h-1" style="margin:18px 0 14px;max-width:22ch;">
+				Privilege-aware AI for law firms and in-house teams.
+			</h1>
+			<p class="lede">
+				Legal AI is a privilege breach waiting to happen if you don't control the data perimeter. 2Trust.AI enforces matter-scoped isolation, screens for conflict-of-interest markers, and produces the audit trail your general counsel actually wants to see.
+			</p>
+			<div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap;">
+				<a href="/contact" class="btn btn-primary">Book a demo <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></a>
+				<a href="/solutions" class="btn btn-quiet">All verticals</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> The challenge</div>
+			<h2 class="h-2" style="margin:14px 0 32px;max-width:28ch;">Legal AI creates privilege and conflict exposure most firms haven't mapped.</h2>
+			<div class="grid-3">
+				<div class="card">
+					<h4 style="margin:0 0 10px;">Privilege waiver risk</h4>
+					<p class="small">Attorney-client privileged communications and work product fed into a commercial AI API may constitute a disclosure to a third party — potentially waiving privilege depending on jurisdiction. The risk is real and largely untested.</p>
+				</div>
+				<div class="card">
+					<h4 style="margin:0 0 10px;">Matter cross-contamination</h4>
+					<p class="small">Shared AI tools with shared context windows create a vector for information from one matter bleeding into research or drafting for another. Firms with adverse client relationships face acute exposure.</p>
+				</div>
+				<div class="card">
+					<h4 style="margin:0 0 10px;">Conflict-of-interest gaps</h4>
+					<p class="small">Standard AI tools have no concept of your conflict database. An associate using AI to research a potential client may inadvertently expose information about an existing adverse party without any system warning.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> How 2Trust.AI helps</div>
+			<h2 class="h-2" style="margin:14px 0 32px;max-width:28ch;">Matter-scoped AI with the controls your ethics counsel expects.</h2>
+			<div class="grid-3">
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">MATTER-SCOPED RBAC</div>
+					<h4 style="margin:0 0 10px;">Hard matter isolation</h4>
+					<p class="small">DocumentCollections are scoped to matter numbers. Access is tied to your matter management system roles. An associate on Matter A cannot retrieve, prompt against, or see documents from Matter B — enforced at the proxy layer.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">CONFLICT DISALLOWED LISTS</div>
+					<h4 style="margin:0 0 10px;">Conflict marker screening</h4>
+					<p class="small">Sync your conflict database as a dynamic disallowed list. 2Trust screens every prompt for conflict markers — adverse party names, entity aliases, counsel names — and blocks or escalates before the prompt is processed.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">AUDIT TRAIL</div>
+					<h4 style="margin:0 0 10px;">Configuration change history</h4>
+					<p class="small">Every policy change is logged with actor identity, timestamp, and before/after state. Suitable for ethics investigations, malpractice defense, and bar disciplinary proceedings. Retained per your firm's records policy.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">PRIVILEGE BOUNDARY ENGINE</div>
+					<h4 style="margin:0 0 10px;">In-VPC for privileged work</h4>
+					<p class="small">For the most sensitive matters, run 2Trust entirely in your own cloud or on-premises. Privileged work product never transits a commercial AI provider's infrastructure. BAA-like control without a BAA.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">DOCUMENT WORKBENCH</div>
+					<h4 style="margin:0 0 10px;">RAG over your matter files</h4>
+					<p class="small">Ingest contracts, filings, transcripts, and correspondence into matter-scoped DocumentCollections. AI research and drafting draws only from the correct matter corpus, with chunk-level citation attribution.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">GOVERNANCE WIZARDS</div>
+					<h4 style="margin:0 0 10px;">AI use policy generation</h4>
+					<p class="small">Wizard-guided policy generation produces firm AI use policies aligned to ABA Formal Opinion 512 and state bar guidance on generative AI. Structured output, not a template — ready for partner review and adoption.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container" style="max-width:860px;">
+			<div class="kpi-row">
+				<div class="kpi-item">
+					<div class="mono" style="font-size:36px;letter-spacing:-.03em;color:var(--ink);">Matter</div>
+					<div class="small">scoped RBAC enforced at proxy layer</div>
+				</div>
+				<div class="kpi-item">
+					<div class="mono" style="font-size:36px;letter-spacing:-.03em;color:var(--ink);">0</div>
+					<div class="small">cross-matter data leaks in production</div>
+				</div>
+				<div class="kpi-item">
+					<div class="mono" style="font-size:36px;letter-spacing:-.03em;color:var(--ink);">100%</div>
+					<div class="small">configuration changes logged with actor identity</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container" style="max-width:680px;text-align:center;">
+			<h2 class="h-2" style="margin:0 0 16px;">Ready to govern legal AI responsibly?</h2>
+			<p style="color:var(--ink-muted);margin:0 0 28px;">We'll walk through your matter management setup, conflict database, and privilege posture — and show you a deployment that your ethics counsel would approve.</p>
+			<a href="/contact" class="btn btn-primary btn-lg">Book a demo <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></a>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; }
+	.kpi-item { display:flex; flex-direction:column; gap:6px; }
+	@media(max-width:600px){ .kpi-row{grid-template-columns:1fr 1fr;} }
+</style>

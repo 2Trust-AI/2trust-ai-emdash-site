@@ -2,12 +2,12 @@
 import Base from "../layouts/Base.astro";
 
 const solutions = [
-	{ tag: "FINANCIAL SERVICES", title: "Protect MNPI and client data across every AI tool.", desc: "Block SSNs, account numbers, and MNPI in prompts with the disallowed-list engine. Rescore every response across six categories. Evidence for SEC, FINRA, and NYDFS — encrypted at rest.", kpis: [["24×7", "moderation log"], ["0", "MNPI leaks in prod"]] },
-	{ tag: "HEALTHCARE", title: "HIPAA-aligned AI for patient-facing workflows.", desc: "Enforce de-identification before PHI reaches a model. Run on approved BAAs with per-org data isolation. Ship clinical AI tooling without the compliance ambiguity.", kpis: [["100%", "messages logged"], ["24×7", "PHI filtering"]] },
-	{ tag: "PUBLIC SECTOR", title: "Sovereign, in-VPC governance for agency AI.", desc: "Deploy fully inside your cloud. FIPS-ready crypto path. Mapped to NIST AI RMF and EU AI Act–style risk scoring. Air-gap capable.", kpis: [["NIST AI RMF", "mapped"], ["In-VPC", "Docker + AWS"]] },
-	{ tag: "LEGAL", title: "Privilege-aware AI for law firms and in-house teams.", desc: "Matter-scoped DocumentCollections. Conflict-of-interest disallowed lists. Full audit trail with django-simple-history for configuration changes.", kpis: [["Matter", "scoped RBAC"], ["0", "privilege breaches"]] },
-	{ tag: "ENTERPRISE IT", title: "One control plane for every AI deployment.", desc: "Whether teams use OpenAI, Anthropic, Bedrock, or homegrown local LLMs — 2Trust sees it, governs it, and ships evidence. Multi-tenant parent/child orgs.", kpis: [["1", "integration surface"], ["Any", "provider supported"]] },
-	{ tag: "PHARMA & LIFE SCIENCES", title: "GxP-aware AI governance for regulated research.", desc: "Validated workflows for research teams. Controlled vocabularies as disallowed lists. Evidence artifacts suitable for FDA and EMA submission packets.", kpis: [["Validated", "workflows"], ["GxP", "aligned"]] },
+	{ tag: "FINANCIAL SERVICES", href: "/solutions/financial-services", title: "Protect MNPI and client data across every AI tool.", desc: "Block SSNs, account numbers, and MNPI in prompts with the disallowed-list engine. Rescore every response across six categories. Evidence for SEC, FINRA, and NYDFS — encrypted at rest.", kpis: [["24×7", "moderation log"], ["0", "MNPI leaks in prod"]] },
+	{ tag: "HEALTHCARE", href: "/solutions/healthcare", title: "HIPAA-aligned AI for patient-facing workflows.", desc: "Enforce de-identification before PHI reaches a model. Run on approved BAAs with per-org data isolation. Ship clinical AI tooling without the compliance ambiguity.", kpis: [["100%", "messages logged"], ["24×7", "PHI filtering"]] },
+	{ tag: "PUBLIC SECTOR & EDUCATION", href: "/solutions/public-sector", title: "Sovereign, in-VPC governance for agency and campus AI.", desc: "Deploy fully inside your cloud. FIPS-ready crypto path. Mapped to NIST AI RMF and EU AI Act–style risk scoring. Air-gap capable for classified environments.", kpis: [["NIST AI RMF", "mapped"], ["In-VPC", "Docker + AWS GovCloud"]] },
+	{ tag: "LEGAL", href: "/solutions/legal", title: "Privilege-aware AI for law firms and in-house teams.", desc: "Matter-scoped DocumentCollections. Conflict-of-interest disallowed lists. Full audit trail with actor identity for configuration changes — ready for ethics investigations.", kpis: [["Matter", "scoped RBAC"], ["0", "privilege breaches"]] },
+	{ tag: "ENTERPRISE IT", href: "/solutions/enterprise-it", title: "One control plane for every AI deployment.", desc: "Whether teams use OpenAI, Anthropic, Bedrock, or homegrown local LLMs — 2Trust sees it, governs it, and ships evidence. Multi-tenant parent/child orgs.", kpis: [["1", "integration surface"], ["Any", "provider supported"]] },
+	{ tag: "PHARMA & LIFE SCIENCES", href: "/solutions/pharma", title: "GxP-aware AI governance for regulated research.", desc: "Validated workflows for research teams. Controlled vocabularies as disallowed lists. Evidence artifacts suitable for FDA and EMA submission packets.", kpis: [["Validated", "workflows"], ["GxP", "aligned"]] },
 ];
 ---
 
@@ -32,7 +32,7 @@ const solutions = [
 			<div class="grid-3">
 				{
 					solutions.map((s) => (
-						<div class="sol-card">
+						<a href={s.href} class="sol-card sol-card-link">
 							<span class="tag">{s.tag}</span>
 							<h3 class="h-3" style="margin:0;">{s.title}</h3>
 							<p class="small" style="flex:1;">{s.desc}</p>
@@ -46,10 +46,28 @@ const solutions = [
 									))
 								}
 							</div>
-						</div>
+							<div style="margin-top:14px;font-size:13px;color:var(--accent);display:flex;align-items:center;gap:5px;font-weight:500;">
+								Learn more
+								<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+							</div>
+						</a>
 					))
 				}
 			</div>
 		</div>
 	</section>
 </Base>
+
+<style>
+	.sol-card-link {
+		text-decoration: none;
+		color: inherit;
+		display: flex;
+		flex-direction: column;
+		transition: border-color 0.15s, box-shadow 0.15s;
+	}
+	.sol-card-link:hover {
+		border-color: var(--accent);
+		box-shadow: 0 0 0 1px var(--accent);
+	}
+</style>

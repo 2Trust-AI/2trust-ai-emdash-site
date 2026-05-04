@@ -1,0 +1,117 @@
+---
+import Base from "../../layouts/Base.astro";
+---
+
+<Base
+	title="Healthcare — 2Trust.AI"
+	description="HIPAA-aligned AI governance for patient-facing workflows. PHI filtering, BAA-compatible deployment, and per-org data isolation."
+>
+	<section class="section" style="padding-bottom:40px;">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> Solutions / Healthcare</div>
+			<h1 class="h-1" style="margin:18px 0 14px;max-width:22ch;">
+				HIPAA-aligned AI for patient-facing workflows.
+			</h1>
+			<p class="lede">
+				Clinical AI is moving faster than healthcare compliance can keep up. 2Trust.AI sits between your teams and every LLM — de-identifying PHI before it reaches a model, logging everything, and making your AI program auditable for OCR, CMS, and accreditation bodies.
+			</p>
+			<div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap;">
+				<a href="/contact" class="btn btn-primary">Book a demo <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></a>
+				<a href="/solutions" class="btn btn-quiet">All verticals</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> The challenge</div>
+			<h2 class="h-2" style="margin:14px 0 32px;max-width:28ch;">Healthcare AI needs guardrails that hold up to a breach investigation.</h2>
+			<div class="grid-3">
+				<div class="card">
+					<h4 style="margin:0 0 10px;">PHI in every prompt</h4>
+					<p class="small">Clinicians and care coordinators naturally include patient details — names, DOBs, diagnoses, medications — in AI prompts. Without automated de-identification, every prompt is a potential HIPAA incident.</p>
+				</div>
+				<div class="card">
+					<h4 style="margin:0 0 10px;">BAA ambiguity</h4>
+					<p class="small">Major AI providers offer BAAs, but the terms vary widely. Knowing which models are covered, under which conditions, and for which use cases requires active governance — not a checkbox.</p>
+				</div>
+				<div class="card">
+					<h4 style="margin:0 0 10px;">Cross-org data bleed</h4>
+					<p class="small">Integrated delivery networks and hospital systems share infrastructure but must maintain patient data separation. A shared AI layer without tenant isolation is a compliance liability waiting to happen.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> How 2Trust.AI helps</div>
+			<h2 class="h-2" style="margin:14px 0 32px;max-width:28ch;">Ship clinical AI tooling without the compliance ambiguity.</h2>
+			<div class="grid-3">
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">PHI FILTER ENGINE</div>
+					<h4 style="margin:0 0 10px;">Automated de-identification</h4>
+					<p class="small">Named entity recognition strips 18 HIPAA identifiers — names, dates, geographic data, contact information, account numbers, device identifiers, biometric data — from prompts before they reach any model.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">BAA-COMPATIBLE ROUTING</div>
+					<h4 style="margin:0 0 10px;">Approved model routing</h4>
+					<p class="small">Define your approved model list with BAA status and use-case scope. 2Trust enforces that clinical workflows only route to covered providers, and blocks unapproved models at the proxy layer.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">TENANT ISOLATION</div>
+					<h4 style="margin:0 0 10px;">Per-org data walls</h4>
+					<p class="small">Hard tenant boundaries ensure that patient data from one facility or entity never appears in the context of another. Audit logs are scoped per org. Policy changes at the network level don't touch entity policies.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">COMPLETE AUDIT TRAIL</div>
+					<h4 style="margin:0 0 10px;">OCR-ready logging</h4>
+					<p class="small">Every prompt and response is logged with user identity, timestamp, and patient context metadata. Exportable in formats suitable for OCR investigations and accreditation audits. Retention configurable per jurisdiction.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">IN-VPC DEPLOYMENT</div>
+					<h4 style="margin:0 0 10px;">No data leaves your cloud</h4>
+					<p class="small">Run entirely inside your AWS, Azure, or GCP environment. Nothing transits 2Trust infrastructure. Satisfies the most restrictive health system data residency policies, including DoD and VA requirements.</p>
+				</div>
+				<div class="card">
+					<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:10px;">GOVERNANCE WIZARDS</div>
+					<h4 style="margin:0 0 10px;">AI risk classification</h4>
+					<p class="small">Wizard-driven risk classification maps each AI use case to its HIPAA risk tier, relevant OCR guidance, and NIST AI RMF controls. Output is a structured risk register, not a slide deck.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container" style="max-width:860px;">
+			<div class="kpi-row">
+				<div class="kpi-item">
+					<div class="mono" style="font-size:36px;letter-spacing:-.03em;color:var(--ink);">100%</div>
+					<div class="small">of prompts and responses logged</div>
+				</div>
+				<div class="kpi-item">
+					<div class="mono" style="font-size:36px;letter-spacing:-.03em;color:var(--ink);">24×7</div>
+					<div class="small">real-time PHI filtering</div>
+				</div>
+				<div class="kpi-item">
+					<div class="mono" style="font-size:36px;letter-spacing:-.03em;color:var(--ink);">18</div>
+					<div class="small">HIPAA identifiers detected and stripped</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container" style="max-width:680px;text-align:center;">
+			<h2 class="h-2" style="margin:0 0 16px;">Ready to make clinical AI auditable?</h2>
+			<p style="color:var(--ink-muted);margin:0 0 28px;">We'll map your current AI surface to your HIPAA obligations and show you what a compliant deployment looks like inside your VPC.</p>
+			<a href="/contact" class="btn btn-primary btn-lg">Book a demo <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"></path></svg></a>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; }
+	.kpi-item { display:flex; flex-direction:column; gap:6px; }
+	@media(max-width:600px){ .kpi-row{grid-template-columns:1fr 1fr;} }
+</style>
