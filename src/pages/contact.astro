@@ -13,9 +13,11 @@ const error = Astro.url.searchParams.get("error");
 		<div class="container" style="max-width:720px;">
 			<div class="eyebrow"><span class="dot"></span> Contact</div>
 			<h1 class="h-1" style="margin:18px 0 14px;">Book a demo.</h1>
-			<p class="lede">
-				Walk through the platform with a 2Trust solutions engineer. We'll map one existing LLM integration onto <span class="mono">/api/v1/ai/infer</span> and stand up a governed DocumentCollection against a representative corpus. Typical pilot: 2–4 weeks.
-			</p>
+			{!success && (
+				<p class="lede">
+					Walk through the platform with a 2Trust solutions engineer. We'll map one existing LLM integration onto <span class="mono">/api/v1/ai/infer</span> and stand up a governed DocumentCollection against a representative corpus. Typical pilot: 2–4 weeks.
+				</p>
+			)}
 
 			{success ? (
 				<div class="card" style="margin-top:32px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;">
