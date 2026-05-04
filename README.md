@@ -1,67 +1,72 @@
-# EmDash Blog Template (Cloudflare)
+# 2Trust.AI Website
 
-A clean, minimal blog built with [EmDash](https://github.com/emdash-cms/emdash) and deployed on Cloudflare Workers with D1 and R2.
+Marketing and content site for [2Trust.AI](https://2trust.ai) — the enterprise control plane for LLMs. Built with [EmDash CMS](https://github.com/emdash-cms/emdash) on Cloudflare Workers + D1 + R2.
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/emdash-cms/templates/tree/main/blog-cloudflare)
+## Stack
 
-![Blog template homepage](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/blog/latest/homepage-light-desktop.jpg)
-
-## What's Included
-
-- Featured post hero on the homepage
-- Post archive with reading time estimates
-- Category and tag archives
-- Full-text search
-- RSS feed
-- SEO metadata and JSON-LD
-- Dark/light mode
-- Forms plugin and webhook notifier
+- **Runtime:** Cloudflare Workers
+- **Database:** D1 (`2trust-ai-emdash-site`)
+- **Storage:** R2 (`2trust-ai-emdash-media`)
+- **Framework:** Astro 6 + `@astrojs/cloudflare`
+- **CMS:** EmDash 0.9 (admin at `/_emdash/admin`)
 
 ## Pages
 
-| Page | Route |
-|---|---|
-| Homepage | `/` |
-| All posts | `/posts` |
-| Single post | `/posts/:slug` |
-| Category archive | `/category/:slug` |
-| Tag archive | `/tag/:slug` |
-| Search | `/search` |
-| Static pages | `/pages/:slug` |
-| 404 | fallback |
-
-## Screenshots
-
-| | Desktop | Mobile |
+| Page | Route | Type |
 |---|---|---|
-| Light | ![homepage light desktop](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/blog/latest/homepage-light-desktop.jpg) | ![homepage light mobile](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/blog/latest/homepage-light-mobile.jpg) |
-| Dark | ![homepage dark desktop](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/blog/latest/homepage-dark-desktop.jpg) | ![homepage dark mobile](https://raw.githubusercontent.com/emdash-cms/emdash/main/assets/templates/blog/latest/homepage-dark-mobile.jpg) |
+| Homepage | `/` | Static Astro |
+| Platform | `/platform` | Static Astro |
+| Solutions | `/solutions` | Static Astro |
+| Governance | `/governance` | Static Astro |
+| Developers | `/developers` | Static Astro |
+| Pricing | `/pricing` | Static Astro |
+| About | `/about` | Static Astro |
+| Contact / Book demo | `/contact` | Static Astro |
+| Privacy Policy | `/privacy-policy` | Static Astro |
+| Terms | `/terms` | Static Astro |
+| Blog posts | `/posts/:slug` | CMS collection |
+| CMS pages | `/pages/:slug` | CMS collection |
+| Search | `/search` | EmDash search |
+| RSS | `/rss.xml` | Feed |
 
-## Infrastructure
+## Plugins
 
-- **Runtime:** Cloudflare Workers
-- **Database:** D1
-- **Storage:** R2
-- **Framework:** Astro with `@astrojs/cloudflare`
+| Plugin | Purpose |
+|---|---|
+| `@emdash-cms/plugin-forms` | Demo request form with admin inbox |
+| `emdash-plugin-resend` | Email delivery (magic links + form notifications) |
+| `@emdash-cms/plugin-webhook-notifier` | Outbound webhooks on content events |
+
+## Analytics
+
+Google Tag Manager (`GTM-W8KTRGCX`) injected via `is:inline` script in `Base.astro`.
 
 ## Local Development
 
 ```bash
-pnpm install
-pnpm bootstrap
-pnpm dev
+npm install
+npx emdash dev
 ```
 
-## Deploying
+Admin UI at `http://localhost:4321/_emdash/admin`.
+
+## Deploy
 
 ```bash
-pnpm deploy
+npm run deploy   # astro build && wrangler deploy
 ```
 
-Or click the deploy button above to set up the project in your Cloudflare account.
+## Required Cloudflare Secrets
+
+Set via `npx wrangler secret put <NAME>`:
+
+| Secret | Purpose |
+|---|---|
+| `EMDASH_OAUTH_GOOGLE_CLIENT_ID` | Google OAuth login |
+| `EMDASH_OAUTH_GOOGLE_CLIENT_SECRET` | Google OAuth login |
+| `RESEND_API_KEY` | Email delivery via Resend |
 
 ## See Also
 
-- [Node.js variant](../blog) -- same template using SQLite and local file storage
-- [All templates](../)
-- [EmDash documentation](https://github.com/emdash-cms/emdash/tree/main/docs)
+- [EmDash documentation](https://docs.emdashcms.com)
+- [EmDash GitHub](https://github.com/emdash-cms/emdash)

@@ -91,6 +91,36 @@ Astro.cache.set(cacheHint);
 
 **Exception:** Marketing/product pages with complex custom layouts (platform, solutions, governance, pricing, etc.) may remain as static `.astro` files since they require component-level customisation not possible through a generic template.
 
+## Analytics / Third-Party Scripts
+
+Add site-level scripts (GTM, analytics, tracking pixels) directly to `Base.astro` inside `<head>` using Astro's `is:inline` directive — **before** `<EmDashHead>`:
+
+```astro
+<!-- Google Tag Manager -->
+<script is:inline>(function(w,d,s,l,i){...})(window,document,'script','dataLayer','GTM-XXXXXX');</script>
+<!-- End Google Tag Manager -->
+<EmDashHead page={pageCtx} />
+```
+
+Add the GTM noscript iframe immediately after `<EmDashBodyStart>`:
+
+```astro
+<EmDashBodyStart page={pageCtx} />
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXX" ...></iframe></noscript>
+```
+
+Do NOT try to use the `page:fragments` plugin hook for site-level analytics. That hook requires a distributable npm plugin with a resolvable module entrypoint — it cannot be registered inline from `astro.config.mjs`.
+
+## Auth & Cloudflare Secrets
+
+Google OAuth requires two Worker secrets (set via `npx wrangler secret put`):
+- `EMDASH_OAUTH_GOOGLE_CLIENT_ID`
+- `EMDASH_OAUTH_GOOGLE_CLIENT_SECRET`
+
+EmDash on Astro v6 + `@astrojs/cloudflare` v13 uses `process.env` (via `nodejs_compat`) to read these — `locals.runtime.env` was removed in Astro v6. A patch in `patches/emdash+0.9.0.patch` fixes the OAuth routes to use `process.env`. Run `npm install` to re-apply it via the `postinstall` script.
+
+The Resend email plugin also needs `RESEND_API_KEY` as a secret, but its value is configured via the admin UI at `/_emdash/admin/plugins/emdash-resend/settings`.
+
 ## Page Pattern Summary
 
 | Page type                            | Where it lives                         |
