@@ -1,0 +1,32 @@
+diff --git a/node_modules/emdash/src/astro/routes/api/auth/oauth/[provider].ts b/node_modules/emdash/src/astro/routes/api/auth/oauth/[provider].ts
+index 0d7d8fa..caa8adc 100644
+--- a/node_modules/emdash/src/astro/routes/api/auth/oauth/[provider].ts
++++ b/node_modules/emdash/src/astro/routes/api/auth/oauth/[provider].ts
+@@ -96,9 +96,9 @@ export const GET: APIRoute = async ({ params, request, locals, redirect }) => {
+ 		// Get OAuth providers from environment
+ 		// Access via locals.runtime for Cloudflare, or import.meta.env for Node
+ 		// eslint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- locals.runtime is injected by the Cloudflare adapter at runtime; not declared on App.Locals since the adapter is optional
+-		const runtimeLocals = locals as unknown as { runtime?: { env?: Record<string, unknown> } };
++		
+ 		// eslint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- import.meta.env is typed as ImportMetaEnv but we need Record<string, unknown> for getOAuthConfig
+-		const env = runtimeLocals.runtime?.env ?? (import.meta.env as Record<string, unknown>);
++		const env = (typeof process !== "undefined" && process.env ? process.env : import.meta.env) as Record<string, unknown>;
+ 		const providers = getOAuthConfig(env);
+ 
+ 		if (!providers[provider]) {
+diff --git a/node_modules/emdash/src/astro/routes/api/auth/oauth/[provider]/callback.ts b/node_modules/emdash/src/astro/routes/api/auth/oauth/[provider]/callback.ts
+index f7e7cc3..c0a406c 100644
+--- a/node_modules/emdash/src/astro/routes/api/auth/oauth/[provider]/callback.ts
++++ b/node_modules/emdash/src/astro/routes/api/auth/oauth/[provider]/callback.ts
+@@ -117,9 +117,9 @@ export const GET: APIRoute = async ({ params, request, locals, session, redirect
+ 	try {
+ 		// Get OAuth providers from environment
+ 		// eslint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- locals.runtime is injected by the Cloudflare adapter at runtime; not declared on App.Locals since the adapter is optional
+-		const runtimeLocals = locals as unknown as { runtime?: { env?: Record<string, unknown> } };
++		
+ 		// eslint-disable-next-line typescript-eslint(no-unsafe-type-assertion) -- import.meta.env is typed as ImportMetaEnv but we need Record<string, unknown> for getOAuthConfig
+-		const env = runtimeLocals.runtime?.env ?? (import.meta.env as Record<string, unknown>);
++		const env = (typeof process !== "undefined" && process.env ? process.env : import.meta.env) as Record<string, unknown>;
+ 		const providers = getOAuthConfig(env);
+ 
+ 		if (!providers[provider]) {
