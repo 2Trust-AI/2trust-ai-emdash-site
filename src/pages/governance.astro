@@ -1,0 +1,162 @@
+---
+import Base from "../layouts/Base.astro";
+
+const wizards = {
+	model: { id: "model", tab: "AI Model Risk", t: "AI Model Risk Wizard", p: "/admin/ai-model-risk-wizard/", sections: ["Purpose", "Data sensitivity", "Individual impact", "Human oversight", "Testing & governance"], output: "Low / Moderate / High / Very High + narrative", score: "MODERATE" },
+	overall: { id: "overall", tab: "Overall AI Risk", t: "Overall AI Risk Survey", p: "/admin/ai-risk-survey/", sections: ["Program scope", "Governance forum", "Incident process", "Third-party posture", "Board reporting"], output: "Org-wide risk profile + narrative for board", score: "LOW" },
+	data: { id: "data", tab: "Data Risk", t: "Data Risk Survey", p: "/admin/data-risk-survey/", sections: ["Data type", "Collection practices", "Accuracy & bias", "Security controls", "Auditing"], output: "Data-risk score + mitigations narrative", score: "MODERATE" },
+};
+
+const order = ["model", "overall", "data"] as const;
+
+const roles = [
+	{ r: "User", d: "Start chats, upload to collections, view own history, use published chatbots." },
+	{ r: "Org Admin", d: "Users, models, filters, wizards, chatbots, logs. Cannot view other orgs." },
+	{ r: "Auditor", d: "Read-only review of moderation logs, audit log, validation scores. Cannot modify." },
+	{ r: "Superuser", d: "Platform-wide. Dataset management, cross-org dashboards, training." },
+];
+
+const badges = [
+	{ n: "EU AI Act", i: "ACT-2024/1689 · HIGH-RISK TIER" },
+	{ n: "NIST AI RMF", i: "AI-RMF-1.0" },
+	{ n: "SOC 1 Type II", i: "AICPA-SOC1-TYPEII" },
+	{ n: "HIPAA", i: "HIPAA-ALIGNED" },
+	{ n: "GDPR", i: "GDPR-2016/679" },
+];
+---
+
+<Base
+	title="Governance — 2Trust.AI"
+	description="Governance you configure once — not a spreadsheet you maintain forever."
+>
+	<section class="section" style="padding-bottom:20px;">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> Governance</div>
+			<h1 class="h-1" style="margin:18px 0 14px;max-width:22ch;">
+				Governance you configure once — not a spreadsheet you maintain forever.
+			</h1>
+			<p class="lede">
+				Three EU AI Act–style risk wizards generate scored, narrative documentation as you configure the platform. Suitable for board packs and regulator responses. Updated automatically in the change log.
+			</p>
+		</div>
+	</section>
+
+	<section class="section" style="padding-top:20px;">
+		<div class="container">
+			<div class="tab-row" role="tablist">
+				{
+					order.map((id, i) => (
+						<button class="tab" role="tab" data-active={i === 0 ? "true" : "false"} data-wizard={id}>
+							{wizards[id].tab}
+						</button>
+					))
+				}
+			</div>
+
+			{
+				order.map((id) => {
+					const w = wizards[id];
+					return (
+						<div
+							data-wizard-panel={id}
+							hidden={id !== "model"}
+							style="margin-top:28px;display:grid;grid-template-columns:1.2fr 1fr;gap:24px;"
+						>
+							<div class="card">
+								<div class="eyebrow"><span class="dot"></span> WIZARD</div>
+								<h2 class="h-2" style="margin:10px 0 6px;">{w.t}</h2>
+								<div class="mono" style="font-size:12px;color:var(--ink-muted);margin-bottom:16px;">{w.p}</div>
+								<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
+									{w.sections.map((s, i) => (
+										<div style="display:flex;gap:12px;align-items:center;padding:10px 12px;background:var(--bg-sunken);border-radius:6px;border:1px solid var(--hair);">
+											<span class="mono" style="font-size:11px;color:var(--ink-muted);min-width:24px;">
+												{String(i + 1).padStart(2, "0")}
+											</span>
+											<span style="font-size:13.5px;">{s}</span>
+											<span style="margin-left:auto;" class="pill pill-ok">answered</span>
+										</div>
+									))}
+								</div>
+								<div style="padding:14px;background:var(--accent-wash);border-radius:8px;color:var(--accent-ink);">
+									<div class="mono" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;">Output</div>
+									<div style="font-size:13.5px;margin-top:4px;">{w.output}</div>
+								</div>
+							</div>
+
+							<div class="card">
+								<div class="eyebrow"><span class="dot"></span> COMPUTED RISK</div>
+								<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:14px 0;">
+									{["LOW", "MODERATE", "HIGH", "VERY HIGH"].map((l) => (
+										<div style={`padding:14px 12px;border-radius:8px;border:1px solid ${l === w.score ? "var(--accent)" : "var(--hair)"};background:${l === w.score ? "var(--accent-wash)" : "transparent"};color:${l === w.score ? "var(--accent-ink)" : "var(--ink-2)"};`}>
+											<div class="mono" style="font-size:11px;">{l}</div>
+											<div style="font-size:12px;margin-top:4px;color:var(--ink-muted);">{l === w.score ? "current score" : "—"}</div>
+										</div>
+									))}
+								</div>
+								<h5 style="margin:16px 0 8px;font-size:12px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.08em;font-family:var(--font-mono);">
+									Narrative (excerpt)
+								</h5>
+								<p class="small" style="line-height:1.6;">
+									Deployment uses a high-quality third-party foundation model with human-in-the-loop review for sensitive outputs. PHI-class data is de-identified before inference. Disallowed lists enforce HIPAA-aligned content blocking. Mitigations reviewed quarterly; last review logged 2026-03-12 by <span class="mono">ciso.admin</span>.
+								</p>
+								<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
+									<span class="pill">auditor-visible</span>
+									<span class="pill">simple-history</span>
+									<span class="pill">versioned</span>
+								</div>
+							</div>
+						</div>
+					);
+				})
+			}
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container">
+			<div class="section-head">
+				<div class="eyebrow"><span class="dot"></span> Roles</div>
+				<h2 class="h-2">Four built-in roles. Read-only auditor by design.</h2>
+			</div>
+			<div class="grid-4">
+				{
+					roles.map((r) => (
+						<div class="card">
+							<h3 class="h-3" style="margin:0;">{r.r}</h3>
+							<p class="small" style="margin-top:8px;">{r.d}</p>
+						</div>
+					))
+				}
+			</div>
+			<div style="margin-top:48px;">
+				<div class="badge-row">
+					{
+						badges.map((b) => (
+							<div class="compliance-badge">
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="color:var(--accent);"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"></path><path d="M9 12l2 2 4-4"></path></svg>
+								<div style="display:flex;flex-direction:column;line-height:1.2;">
+									<span>{b.n}</span>
+									<span class="mono">{b.i}</span>
+								</div>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<script>
+	const wizTabs = document.querySelectorAll<HTMLElement>(".tab[data-wizard]");
+	const wizPanels = document.querySelectorAll<HTMLElement>("[data-wizard-panel]");
+	wizTabs.forEach((t) =>
+		t.addEventListener("click", () => {
+			const id = t.dataset.wizard!;
+			wizTabs.forEach((tt) => tt.setAttribute("data-active", String(tt === t)));
+			wizPanels.forEach((p) => {
+				p.hidden = p.dataset.wizardPanel !== id;
+			});
+		})
+	);
+</script>

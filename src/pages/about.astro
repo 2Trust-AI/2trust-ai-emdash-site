@@ -1,0 +1,73 @@
+---
+import Base from "../layouts/Base.astro";
+
+const timeline = [
+	{ w: "2023", t: "Founded", x: "Two former bank CISOs and an ML platform lead ship the first 2Trust proxy, frustrated by watching unauthorized AI spread through regulated teams." },
+	{ w: "2024", t: "First design partners", x: "Seed round closed. First deployment with a regional financial services partner. Early version of the six-category filter engine and risk wizards ships." },
+	{ w: "2025", t: "Document Workbench + MCP", x: "pgvector-backed RAG ships with chunk, section, and document summary granularities. MCP service accounts added for governed tool use." },
+	{ w: "2026", t: "Enterprise rollout", x: "In-VPC install generally available. Local-LLM runtime with FP16/INT8 quantization. Expanded to healthcare and legal design partners." },
+];
+
+const badges = [
+	{ n: "EU AI Act", i: "ACT-2024/1689 · HIGH-RISK TIER" },
+	{ n: "NIST AI RMF", i: "AI-RMF-1.0" },
+	{ n: "SOC 1 Type II", i: "AICPA-SOC1-TYPEII" },
+	{ n: "HIPAA", i: "HIPAA-ALIGNED" },
+	{ n: "GDPR", i: "GDPR-2016/679" },
+];
+---
+
+<Base
+	title="About — 2Trust.AI"
+	description="We believe every AI decision should be explainable to your board, your regulator, and your customer."
+>
+	<section class="section" style="padding-bottom:40px;">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> About</div>
+			<h1 class="h-1" style="margin:18px 0 14px;max-width:22ch;">
+				We believe every AI decision should be explainable to your board, your regulator, and your customer.
+			</h1>
+			<p class="lede">
+				2Trust.AI was founded by security leaders who spent their careers proving to regulators that systems were under control. Then AI arrived, and the rulebook didn't. We wrote the control plane that was missing.
+			</p>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container" style="max-width:860px;">
+			<div class="eyebrow"><span class="dot"></span> Timeline</div>
+			<h2 class="h-2" style="margin-top:14px;margin-bottom:28px;">How we got here.</h2>
+			<div class="timeline">
+				{
+					timeline.map((t) => (
+						<div class="timeline-row">
+							<span class="when">{t.w}</span>
+							<div class="what">
+								<h4>{t.t}</h4>
+								<p>{t.x}</p>
+							</div>
+						</div>
+					))
+				}
+			</div>
+			<div style="margin-top:56px;">
+				<div class="eyebrow"><span class="dot"></span> Trust posture</div>
+				<div style="margin-top:14px;">
+					<div class="badge-row">
+						{
+							badges.map((b) => (
+								<div class="compliance-badge">
+									<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="color:var(--accent);"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"></path><path d="M9 12l2 2 4-4"></path></svg>
+									<div style="display:flex;flex-direction:column;line-height:1.2;">
+										<span>{b.n}</span>
+										<span class="mono">{b.i}</span>
+									</div>
+								</div>
+							))
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Base>

@@ -36,3 +36,65 @@ Agent skills are in `.agents/skills/`. Load them when working on specific tasks:
 - `entry.id` is the slug (for URLs). `entry.data.id` is the database ULID (for API calls like `getEntryTerms`).
 - Always call `Astro.cache.set(cacheHint)` on pages that query content.
 - Taxonomy names in queries must match the seed's `"name"` field exactly (e.g., `"category"` not `"categories"`).
+
+## Navigation — Always use getMenu
+
+Never hardcode nav links in `Base.astro` or any layout. Always fetch from EmDash:
+
+```typescript
+import { getMenu } from "emdash";
+const primaryMenu = await getMenu("primary");
+const navLinks = primaryMenu?.items.map(item => [item.url, item.label]) ?? [];
+```
+
+The `primary` menu is defined in `seed/seed.json` and editable from the admin. Hardcoding nav requires a redeploy to change a link.
+
+## Site Settings — Always use getSiteSettings
+
+Never hardcode the site name, tagline, or other settings. Use:
+
+```typescript
+import { getSiteSettings } from "emdash";
+const settings = await getSiteSettings();
+```
+
+## Forms — Always use the EmDash Forms Plugin
+
+Never build custom D1 handlers, raw fetch endpoints, or bypass `@emdash-cms/plugin-forms`. The forms plugin provides spam protection, an admin submissions inbox, email notifications, and CSV export.
+
+**Correct pattern:**
+
+1. Go to `/_emdash/admin` → Forms → create a new form with the required fields
+2. Note the form slug (e.g. `demo-request`)
+3. In the HTML form:
+   ```html
+   <form method="post" action="/_emdash/forms/submit">
+     <input type="hidden" name="formId" value="demo-request" />
+     <!-- fields -->
+   </form>
+   ```
+
+The forms plugin is already registered in `astro.config.mjs`. All that's needed is the form definition in the admin. If admin access is unavailable, document the manual step in a TODO comment — do not build a parallel system.
+
+## Content Pages — Use the CMS pages Collection
+
+Simple content pages (legal docs, policy pages, informational pages) must be entries in the `pages` CMS collection, not static `.astro` files. This lets editors update them from the admin without a redeploy.
+
+The `pages` collection is defined in `seed/seed.json`. The route template is at `src/pages/pages/[slug].astro`.
+
+```typescript
+// src/pages/pages/[slug].astro
+const { entry: page, cacheHint } = await getEmDashEntry("pages", slug);
+Astro.cache.set(cacheHint);
+```
+
+**Exception:** Marketing/product pages with complex custom layouts (platform, solutions, governance, pricing, etc.) may remain as static `.astro` files since they require component-level customisation not possible through a generic template.
+
+## Page Pattern Summary
+
+| Page type                            | Where it lives                         |
+| ------------------------------------ | -------------------------------------- |
+| Marketing (platform, solutions, etc) | `src/pages/*.astro` (custom layout)    |
+| Simple content (legal, info, etc)    | CMS `pages` collection → `/pages/slug` |
+| Blog posts                           | CMS `posts` collection → `/posts/slug` |
+| Contact / form pages                 | EmDash forms plugin via admin UI       |

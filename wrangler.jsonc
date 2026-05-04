@@ -24,4 +24,14 @@
 			"binding": "LOADER",
 		},
 	],
+	"kv_namespaces": [
+		{
+			"binding": "SESSION",
+			"id": "75dbe2ed3f884d0987cfb996af814428",
+		},
+	],
+	"routes": [
+		{ "pattern": "2trust.ai", "custom_domain": true },
+		{ "pattern": "www.2trust.ai", "custom_domain": true },
+	],
 }

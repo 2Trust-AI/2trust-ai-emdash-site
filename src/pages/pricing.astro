@@ -1,0 +1,166 @@
+---
+import Base from "../layouts/Base.astro";
+
+const tiers = [
+	{
+		t: "Team",
+		pAnnual: 1200,
+		pMonthly: 1500,
+		u: "/mo",
+		d: "For AI-native teams standardizing governance before scale.",
+		cta: "Start trial",
+		v: "ghost",
+		featured: false,
+		f: [
+			"Up to 25 seats",
+			"500k governed messages/mo",
+			"Managed cloud (US / EU)",
+			"Full Safety & Trust Layer",
+			"6-category filters + disallowed lists",
+			"Up to 5 DocumentCollections",
+			"REST API v1 + MCP service accounts",
+			"SOC 1 Type II attestation",
+			"Email support · 2 business days",
+		],
+	},
+	{
+		t: "Enterprise",
+		pAnnual: "Custom",
+		pMonthly: "Custom",
+		u: "",
+		d: "For regulated enterprises governing AI across business units.",
+		cta: "Contact sales",
+		v: "accent",
+		featured: true,
+		f: [
+			"Unlimited seats & volume",
+			"In-VPC or managed",
+			"Parent/child orgs + SCIM",
+			"Auth0 SSO + Allauth identity",
+			"Unlimited DocumentCollections + vision + DALL·E",
+			"All three risk wizards + narrative evidence",
+			"Auditor role + encrypted message storage",
+			"Dedicated TAM + quarterly reviews",
+			"24×7 pager · 15 min SLA",
+		],
+	},
+	{
+		t: "Sovereign",
+		pAnnual: "Custom",
+		pMonthly: "Custom",
+		u: "",
+		d: "Air-gap and in-VPC deployments for the most regulated.",
+		cta: "Contact sales",
+		v: "ghost",
+		featured: false,
+		f: [
+			"Fully in-VPC / air-gap",
+			"Hardware-backed key management",
+			"Local LLM runtime · FP16 / INT8 quantization",
+			"NIST AI RMF mapped",
+			"Custom evidence schemas",
+			"Named security engineer",
+			"Annual third-party pen test",
+			"Prompt-hacking dataset customization",
+		],
+	},
+];
+---
+
+<Base
+	title="Pricing — 2Trust.AI"
+	description="Governance pricing, not AI pricing. No per-prompt fees. No surprise overages."
+>
+	<section class="section" style="padding-bottom:20px;">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> Pricing</div>
+			<h1 class="h-1" style="margin:18px 0 14px;max-width:18ch;">
+				Governance pricing, not AI pricing.
+			</h1>
+			<p class="lede">
+				No per-prompt fees. No surprise overages. Predictable line items your finance team can actually budget for.
+			</p>
+			<div style="margin-top:24px;display:flex;gap:10px;align-items:center;">
+				<div class="tab-row" id="priceCycle">
+					<button class="tab" data-active="true" data-cycle="annual">Annual (save 20%)</button>
+					<button class="tab" data-cycle="monthly">Monthly</button>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="section" style="padding-top:40px;">
+		<div class="container">
+			<div class="price-grid">
+				{
+					tiers.map((t) => (
+						<div class={`price-card${t.featured ? " featured" : ""}`}>
+							{t.featured && <span class="pill pill-accent" style="position:absolute;top:-12px;left:24px;">Most enterprises</span>}
+							<span class="tier">{t.t}</span>
+							<div class="price">
+								{typeof t.pAnnual === "number" ? (
+									<>
+										<span data-annual>${t.pAnnual.toLocaleString()}</span>
+										<span data-monthly hidden>${t.pMonthly.toLocaleString()}</span>
+										<small>{t.u}</small>
+									</>
+								) : (
+									t.pAnnual
+								)}
+							</div>
+							<div class="desc">{t.d}</div>
+							<ul>
+								{t.f.map((x) => (
+									<li>
+										<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M4 10l4 4 8-8"></path></svg>
+										<span>{x}</span>
+									</li>
+								))}
+							</ul>
+							<button class={`btn btn-${t.v} btn-lg`}>
+								{t.cta}
+								<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+							</button>
+						</div>
+					))
+				}
+			</div>
+
+			<div style="margin-top:48px;padding:28px;border-radius:12px;background:var(--bg-sunken);border:1px solid var(--hair);">
+				<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;">
+					<div>
+						<div class="eyebrow"><span class="dot"></span> Cost containment</div>
+						<h3 class="h-3" style="margin:10px 0 6px;">Blocked prompts never spend a token.</h3>
+						<p class="small">Input filter + classifiers stop disallowed and attack prompts before a paid provider is ever called. The safety layer is also a line-item on cost.</p>
+					</div>
+					<div>
+						<div class="eyebrow"><span class="dot"></span> Vendor consolidation</div>
+						<h3 class="h-3" style="margin:10px 0 6px;">One contract. Many substitutable models.</h3>
+						<p class="small">Swap providers via configuration, not rework. Model upgrades don't cost you another integration project.</p>
+					</div>
+					<div>
+						<div class="eyebrow"><span class="dot"></span> Procurement-ready</div>
+						<h3 class="h-3" style="margin:10px 0 6px;">MSA · SIG Lite · CAIQ · on request</h3>
+						<p class="small">Pre-populated security questionnaires. Standardized MSA. Trust Center with SOC 1 report under NDA.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<script>
+	const tabs = document.querySelectorAll<HTMLElement>("#priceCycle .tab");
+	tabs.forEach((t) =>
+		t.addEventListener("click", () => {
+			const cycle = t.dataset.cycle;
+			tabs.forEach((tt) => tt.setAttribute("data-active", String(tt === t)));
+			document.querySelectorAll<HTMLElement>("[data-annual]").forEach((el) => {
+				el.hidden = cycle !== "annual";
+			});
+			document.querySelectorAll<HTMLElement>("[data-monthly]").forEach((el) => {
+				el.hidden = cycle !== "monthly";
+			});
+		})
+	);
+</script>

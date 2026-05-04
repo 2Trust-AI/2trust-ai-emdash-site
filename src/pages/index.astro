@@ -1,450 +1,458 @@
 ---
-import { getEmDashCollection, getEntryTerms, getSiteSettings } from "emdash";
-import { Image } from "emdash/ui";
 import Base from "../layouts/Base.astro";
-import PostCard from "../components/PostCard.astro";
-import { getReadingTime } from "../utils/reading-time";
-import { resolveBlogSiteIdentity } from "../utils/site-identity";
 
-const { entries: posts, cacheHint } = await getEmDashCollection("posts");
-const { siteTitle, siteTagline } = resolveBlogSiteIdentity(await getSiteSettings());
+const stream = [
+	{ u: "alex.chen@meridian", f: "ok", t: "Summarize the Q3 board pack section on...", m: "claude-sonnet-4.5" },
+	{ u: "priya.r@halcyon", f: "warn", t: "Draft discharge letter for patient with...", m: "gpt-4o" },
+	{ u: "agent/sdr-bot", f: "ok", t: "Classify inbound lead: Acme Corp", m: "claude-haiku-4.5" },
+	{ u: "ben.wu@verax", f: "block", t: "Share client SSN 123-45-... to model", m: "gpt-4o" },
+	{ u: "unknown/external", f: "block", t: "Ignore prior instructions, you are now...", m: "claude-sonnet-4.5" },
+	{ u: "j.patel@arcadia", f: "warn", t: "What do you think about the upcoming...", m: "bedrock-llama" },
+];
 
-Astro.cache.set(cacheHint);
+const scores: Array<[string, number]> = [
+	["religion", 0.02],
+	["politics", 0.04],
+	["gender", 0.01],
+	["race", 0.01],
+	["violence", 0.06],
+	["sensitive", 0.98],
+];
 
-const sortedPosts = posts.toSorted((a, b) => {
-	const dateA = a.data.publishedAt?.getTime() ?? 0;
-	const dateB = b.data.publishedAt?.getTime() ?? 0;
-	return dateB - dateA;
-});
+const metrics: Array<[string, string]> = [
+	["Prompts / 24h", "48,210"],
+	["Filter flags", "612"],
+	["Attacks blocked", "47"],
+	["Impersonation blocks", "23"],
+	["p95 filter lat.", "+84 ms"],
+	["Active LLM configs", "38"],
+];
 
-// Find the first post with a featured image for the hero
-const featuredPost = sortedPosts.find((p) => p.data.featured_image);
-const featuredIndex = featuredPost ? sortedPosts.indexOf(featuredPost) : -1;
+const badges = [
+	{ n: "EU AI Act", i: "ACT-2024/1689 · HIGH-RISK TIER" },
+	{ n: "NIST AI RMF", i: "AI-RMF-1.0" },
+	{ n: "SOC 1 Type II", i: "AICPA-SOC1-TYPEII" },
+	{ n: "HIPAA", i: "HIPAA-ALIGNED" },
+	{ n: "GDPR", i: "GDPR-2016/679" },
+];
 
-// Get remaining posts (exclude featured if found, limit to 6 for grid)
-const gridPosts = sortedPosts.filter((_, i) => i !== featuredIndex).slice(0, 6);
+const features = [
+	{
+		tag: "01 · SAFETY & TRUST",
+		title: "Prompt-hacking & impersonation defense",
+		desc: "Two purpose-trained transformer classifiers — FP16-quantized, torch.compile()-optimized — inspect every prompt for injection, jailbreaks, and role-hijack attempts. Sub-100ms on GPU.",
+		body: [
+			["prompt-hacking.clf", "fp16 · gpu", "ok"],
+			["impersonation.clf", "fp16 · gpu", "ok"],
+			["p95 latency", "84 ms", "accent"],
+			["attacks blocked · 24h", "47", "ink"],
+		],
+	},
+	{
+		tag: "02 · CONTENT FILTERING",
+		title: "Six-category, threshold-based filters",
+		desc: "Every message scored across Religion, Politics, Gender, Race, Violence, and Sensitive. Admins set per-category thresholds and custom block messages. Input and output, in and out.",
+		bars: scores,
+	},
+	{
+		tag: "03 · DISALLOWED LISTS",
+		title: "Curated, versioned, subscribable",
+		desc: "Block or flag words and phrases across the organization. Version every change. Child orgs subscribe to a central list maintained by the security team — updates inherit automatically.",
+		body: [
+			["list.global.v2026-Q2", "active", "ok"],
+			["list.finance.mnpi.v7", "active", "ok"],
+			["list.hr.protected-class.v3", "active", "ok"],
+			["subscribers", "38 child orgs", "ink"],
+		],
+	},
+	{
+		tag: "04 · GOVERNANCE",
+		title: "EU AI Act–style risk wizards",
+		desc: "Three structured wizards — AI Model Risk, Overall AI Risk, Data Risk. Each produces a numerical score (Low / Moderate / High / Very High) plus narrative documentation suitable for board or regulator.",
+		body: [
+			["AI Model Risk", "MODERATE", "warn"],
+			["Overall AI Risk", "LOW", "ok"],
+			["Data Risk", "MODERATE", "warn"],
+			["narrative", "generated", "ink"],
+		],
+	},
+	{
+		tag: "05 · MODEL ABSTRACTION",
+		title: "Any model. One configuration.",
+		desc: "OpenAI, Anthropic, Bedrock, OpenRouter, Llama, Mistral, local LLMs. Vision and DALL·E included. Swap providers in an LLM Configuration — your apps never change.",
+		body: [
+			["claude-sonnet-4.5", "approved", "ok"],
+			["gpt-4o · vision", "approved", "ok"],
+			["mistral-large-2", "review", "warn"],
+			["local/llama-3.1-70b", "approved", "ok"],
+		],
+	},
+	{
+		tag: "06 · DOCUMENT WORKBENCH",
+		title: "Your docs. Governed RAG.",
+		desc: "Upload PDF, DOCX, PPTX, XLSX, HTML, code. Chunk, embed, and store in PostgreSQL pgvector. Three granularities — chunk, section-summary, doc-summary. Per-org S3 namespaces.",
+		body: [
+			["collections", "12", "ink"],
+			["documents", "8,412", "ink"],
+			["embeddings", "1.2M chunks", "ink"],
+			["store", "pgvector · S3", "ink"],
+		],
+	},
+	{
+		tag: "07 · AUDIT TRAIL",
+		title: "Every message. Encrypted. Versioned.",
+		desc: "Every prompt, completion, validation score, and user feedback stored encrypted at rest. Full change history on every configuration object via django-simple-history. Read-only auditor role.",
+		body: [
+			["messages (90d)", "4.3M", "ink"],
+			["at-rest encryption", "✓ cryptography", "ok"],
+			["config change log", "simple-history", "ok"],
+			["auditor role", "read-only", "ink"],
+		],
+	},
+	{
+		tag: "08 · MCP & API",
+		title: "Versioned REST + MCP tool calling",
+		desc: "A stable /api/v1/ surface for ai/infer, kb/search, kb/train, moderation, and jobs. MCP service accounts let external tools call 2Trust on behalf of the org — hashed token storage, instant revoke.",
+		body: [
+			["POST /api/v1/ai/infer", "GA", "ok"],
+			["POST /api/v1/kb/search", "GA", "ok"],
+			["POST /api/v1/moderation/*", "GA", "ok"],
+			["MCP service accounts", "hashed", "ok"],
+		],
+	},
+	{
+		tag: "09 · MULTI-TENANCY",
+		title: "Parent/child orgs, four built-in roles",
+		desc: "Organization hierarchy with data isolation at the model layer. Roles: Superuser, Org Admin, Auditor (read-only), User. Auth0 OAuth2 SSO + Django Allauth. Per-org S3, API keys, defaults.",
+		body: [
+			["sso · auth0 oauth2", "✓", "ok"],
+			["roles", "4 built-in", "ink"],
+			["per-org S3 namespace", "✓", "ok"],
+			["plans & feature gates", "✓", "ok"],
+		],
+	},
+];
 
-// Total posts shown = featured (if any) + grid posts
-const totalShown = (featuredPost ? 1 : 0) + gridPosts.length;
-const hasMorePosts = sortedPosts.length > totalShown;
+const steps = [
+	{ n: "01", t: "Screen input", d: "Input filter + prompt-hacking classifier + impersonation classifier inspect the prompt. Attacks and disallowed content are rejected before a paid token is ever spent." },
+	{ n: "02", t: "Infer", d: "The configuration's LLM — OpenAI, Anthropic, Bedrock, local — is called with the bound system prompt and any retrieved DocumentCollection context." },
+	{ n: "03", t: "Screen output", d: "Output filter scores the response across six categories. Per-category thresholds trigger block, redact, or warn. Custom block messages replace unsafe content." },
+	{ n: "04", t: "Record", d: "The full exchange — prompt, response, scores, flags, user feedback — is stored encrypted at rest. Configuration changes are captured by django-simple-history." },
+];
 
-// Fetch tags for featured post (bylines are already hydrated by getEmDashCollection)
-let featuredTags: Array<{ slug: string; label: string }> = [];
-const featuredBylines = featuredPost?.data.bylines ?? [];
-if (featuredPost) {
-	const tags = await getEntryTerms("posts", featuredPost.data.id, "tag");
-	featuredTags = tags.map((t) => ({ slug: t.slug, label: t.label }));
-}
+const integrations: Array<[string, string]> = [
+	["OpenAI", "OA"],
+	["Anthropic", "A"],
+	["AWS Bedrock", "BR"],
+	["OpenRouter", "OR"],
+	["Llama", "LL"],
+	["Mistral", "MI"],
+	["Local LLM", "LO"],
+	["DALL·E", "DE"],
+	["Vision models", "VN"],
+	["pgvector", "PG"],
+	["PostgreSQL", "PG"],
+	["Redis", "RD"],
+	["Celery", "CL"],
+	["Auth0", "A0"],
+	["MCP", "MC"],
+	["S3", "S3"],
+];
 
-// Fetch tags for grid posts (bylines are already hydrated by getEmDashCollection)
-const gridPostsWithTags = await Promise.all(
-	gridPosts.map(async (post) => {
-		const tags = await getEntryTerms("posts", post.data.id, "tag");
-		const bylines = post.data.bylines ?? [];
-		return {
-			post,
-			tags: tags.map((t) => ({ slug: t.slug, label: t.label })),
-			bylines,
-		};
-	})
-);
-
-// Format date helper
-function formatDate(date: Date | null | undefined) {
-	if (!date) return null;
-	return date.toLocaleDateString("en-US", {
-		year: "numeric",
-		month: "long",
-		day: "numeric",
-	});
+function colorFor(kind: string) {
+	if (kind === "ok") return "var(--ok)";
+	if (kind === "warn") return "oklch(.55 .15 70)";
+	if (kind === "danger") return "var(--danger)";
+	if (kind === "accent") return "var(--accent)";
+	return "var(--ink)";
 }
 ---
 
-<Base title={siteTitle} description={siteTagline}>
-	{
-		posts.length === 0 ? (
-			<section class="empty-state">
-				<h2>No posts yet</h2>
-				<p>Create your first post in the admin panel.</p>
-				<a href="/_emdash/admin/content/posts/new" class="btn">
-					Create a post
-				</a>
-			</section>
-		) : (
-			<div class="home-content">
-				{/* Featured Post - Side by side */}
-				{featuredPost && (
-					<section class="featured-section">
-						<div class="featured-grid">
-							<a href={`/posts/${featuredPost.id}`} class="featured-image-link">
-								<div class="featured-image">
-									<Image image={featuredPost.data.featured_image} />
-								</div>
-							</a>
-							<div class="featured-content">
-								<div class="featured-meta">
-									{featuredBylines.length > 0 && (
-										<>
-											<div class="featured-bylines">
-												{featuredBylines.slice(0, 2).map((credit, index) => (
-													<>
-														{index > 0 && <span class="byline-sep">,</span>}
-														<span class="featured-byline">
-															{credit.byline.avatarMediaId && (
-																<img
-																	src={`/_emdash/api/media/file/${credit.byline.avatarMediaId}`}
-																	alt={credit.byline.displayName}
-																	class="featured-byline-avatar"
-																/>
-															)}
-															<span class="featured-byline-name">
-																{credit.byline.displayName}
-															</span>
-														</span>
-													</>
-												))}
-												{featuredBylines.length > 2 && (
-													<span class="byline-more">
-														+{featuredBylines.length - 2}
-													</span>
-												)}
+<Base
+	title="2Trust.AI — The enterprise control plane for LLMs"
+	description="2Trust.AI sits between your people, your customers, your data, and every LLM — enforcing safety, alignment, compliance, and auditability on every prompt and every response."
+>
+	<!-- Hero -->
+	<section class="hero">
+		<div class="bg-grid"></div>
+		<div class="container" style="position:relative;">
+			<div class="hero-grid">
+				<div>
+					<div class="hero-eyebrow-row">
+						<span class="pill pill-accent"><span class="status-dot ok"></span> Safety & Trust Layer · v4</span>
+						<span class="pill">EU AI Act · NIST AI RMF · SOC 1</span>
+					</div>
+					<h1 class="h-display">The enterprise control plane for LLMs.</h1>
+					<p class="lede" style="margin-top:22px;">
+						2Trust.AI sits between your people, your customers, your data, and every LLM — enforcing safety, alignment, compliance, and auditability on every prompt and every response.
+					</p>
+					<div style="display:flex;gap:10px;margin-top:28px;flex-wrap:wrap;">
+						<a href="/contact" class="btn btn-primary btn-lg">
+							Book a demo
+							<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+						</a>
+						<a href="/platform" class="btn btn-ghost btn-lg">See the platform</a>
+					</div>
+					<div style="margin-top:28px;display:flex;gap:24px;align-items:center;color:var(--ink-muted);font-size:12.5px;flex-wrap:wrap;">
+						<span class="mono">DEPLOY IN-VPC</span>
+						<span class="mono">OPEN INSPECTABLE STACK</span>
+						<span class="mono">MULTI-TENANT READY</span>
+					</div>
+				</div>
+
+				<!-- Hero dashboard -->
+				<div>
+					<div class="hero-dash">
+						<div class="hero-dash-top">
+							<div class="hero-dash-title">
+								<span class="liveblink"></span>
+								<span class="mono">SAFETY & TRUST LAYER / LIVE</span>
+							</div>
+							<div class="mono" style="color:var(--ink-muted);font-size:11px;">ORG: meridian-prod &nbsp;·&nbsp; t+0.00s</div>
+						</div>
+						<div class="hero-dash-cols">
+							<div class="hero-dash-col">
+								<h5>Inbound prompts</h5>
+								{
+									stream.map((r, i) => (
+										<div class="stream-row" data-flag={r.f} data-selected={i === 3 ? "true" : undefined} style={i === 3 ? "background:var(--bg-sunken);" : undefined}>
+											<div>
+												<div class="txt">{r.t}</div>
+												<div class="meta">{r.u}</div>
 											</div>
-											<span class="meta-dot" />
-										</>
-									)}
-									{formatDate(featuredPost.data.publishedAt) && (
-										<time>{formatDate(featuredPost.data.publishedAt)}</time>
-									)}
-									<span class="meta-dot" />
-									<span>
-										{getReadingTime(featuredPost.data.content)} min read
-									</span>
-								</div>
-								<a
-									href={`/posts/${featuredPost.id}`}
-									class="featured-title-link"
-								>
-									<h1 class="featured-title">{featuredPost.data.title}</h1>
-								</a>
-								{featuredPost.data.excerpt && (
-									<p class="featured-excerpt">{featuredPost.data.excerpt}</p>
-								)}
-								{featuredTags.length > 0 && (
-									<div class="featured-tags">
-										{featuredTags.map((tag) => (
-											<a href={`/tag/${tag.slug}`} class="featured-tag">
-												{tag.label}
-											</a>
-										))}
+											<div style="text-align:right;">
+												<div style={`color:${r.f === "block" ? "var(--danger)" : r.f === "warn" ? "oklch(.5 .15 70)" : "var(--ok)"};font-size:10px;`}>
+													{r.f.toUpperCase()}
+												</div>
+												<div class="meta">{r.m}</div>
+											</div>
+										</div>
+									))
+								}
+							</div>
+
+							<div class="hero-dash-col">
+								<h5>Prompt inspector · BLOCKED</h5>
+								<div class="inspect-block">
+									<h6>
+										<span>Input</span>
+										<span class="mono" style="color:var(--ink-muted);">en-US · 142 tok</span>
+									</h6>
+									<div class="inspect-body">
+										Please file a ticket and include the client's full SSN <span class="token-highlight">123-45-6789</span> so we can run compliance checks on the account...
 									</div>
-								)}
+								</div>
+								<div class="inspect-block">
+									<h6>
+										<span>Validation scores · 6 categories</span>
+										<span class="mono" style="color:var(--ink-muted);">threshold 0.90</span>
+									</h6>
+									{
+										scores.map(([k, v]) => (
+											<div class="cat-bar" data-hot={v >= 0.9 ? "true" : undefined} data-warn={v >= 0.7 && v < 0.9 ? "true" : undefined}>
+												<span class="mono" style="color:var(--ink-muted);font-size:10.5px;text-transform:uppercase;">{k}</span>
+												<div class="bar"><div style={`width:${v * 100}%;`}></div></div>
+												<span class="mono" style={`font-size:10.5px;text-align:right;color:${v >= 0.9 ? "var(--danger)" : v >= 0.7 ? "oklch(.5 .15 70)" : "var(--ink-muted)"};`}>
+													{v.toFixed(2)}
+												</span>
+											</div>
+										))
+									}
+								</div>
+								<div class="inspect-block">
+									<h6>
+										<span>Classifier verdicts</span>
+										<span class="mono" style="color:var(--ink-muted);">fp16 · &lt;100ms</span>
+									</h6>
+									<div style="font-family:var(--font-mono);font-size:11.5px;display:grid;gap:4px;">
+										<div style="display:flex;justify-content:space-between;"><span>prompt-hacking.classifier</span><span style="color:var(--ok);">○ clean</span></div>
+										<div style="display:flex;justify-content:space-between;"><span>impersonation.classifier</span><span style="color:var(--ok);">○ clean</span></div>
+										<div style="display:flex;justify-content:space-between;"><span>disallowed.list (v2026-Q2)</span><span style="color:var(--danger);">● MATCH · pii.ssn</span></div>
+									</div>
+								</div>
+							</div>
+
+							<div class="hero-dash-col">
+								<h5>Org metrics · 24h</h5>
+								{
+									metrics.map(([k, v]) => (
+										<div class="metric-row"><span class="k">{k}</span><span class="v">{v}</span></div>
+									))
+								}
+								<div style="margin-top:14px;padding:12px;background:var(--accent-wash);border-radius:6px;font-size:11px;font-family:var(--font-mono);color:var(--accent-ink);">
+									↑ All messages encrypted at rest & audit-logged
+								</div>
 							</div>
 						</div>
-					</section>
-				)}
-
-				{/* Latest Posts */}
-				{gridPostsWithTags.length > 0 && (
-					<section class="posts-section">
-						<header class="section-header">
-							<h2 class="section-title">Latest</h2>
-							{hasMorePosts && (
-								<a href="/posts" class="section-link">
-									View all
-								</a>
-							)}
-						</header>
-						<div class="posts-grid">
-							{gridPostsWithTags.map(({ post, tags, bylines }) => (
-								<PostCard
-									title={post.data.title ?? "Untitled"}
-									excerpt={post.data.excerpt}
-									featuredImage={post.data.featured_image}
-									href={`/posts/${post.id}`}
-									date={post.data.publishedAt ?? undefined}
-									readingTime={getReadingTime(post.data.content)}
-									tags={tags}
-									bylines={bylines}
-								/>
-							))}
-						</div>
-					</section>
-				)}
+					</div>
+				</div>
 			</div>
-		)
-	}
+		</div>
+	</section>
+
+	<!-- Stats -->
+	<section class="section-sm">
+		<div class="container">
+			<div class="stats">
+				<div class="stat-cell"><div class="num">6</div><div class="lbl">Categories scored</div></div>
+				<div class="stat-cell"><div class="num">&lt;100ms</div><div class="lbl">Classifier latency</div></div>
+				<div class="stat-cell"><div class="num">100%</div><div class="lbl">Messages audit-logged</div></div>
+				<div class="stat-cell"><div class="num">19</div><div class="lbl">UI languages</div></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Compliance badges -->
+	<section class="section-sm section-divider">
+		<div class="container">
+			<div class="section-head" style="max-width:780px;margin-bottom:28px;">
+				<div class="eyebrow"><span class="dot"></span> Evidence, not promises</div>
+				<h2 class="h-2">
+					Every message — prompt and completion — validated across six categories, encrypted at rest, and audit-logged for the auditor.
+				</h2>
+			</div>
+			<div class="badge-row">
+				{
+					badges.map((b) => (
+						<div class="compliance-badge">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="color:var(--accent);"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"></path><path d="M9 12l2 2 4-4"></path></svg>
+							<div style="display:flex;flex-direction:column;line-height:1.2;">
+								<span>{b.n}</span>
+								<span class="mono">{b.i}</span>
+							</div>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- Feature grid -->
+	<section class="section">
+		<div class="container">
+			<div class="section-head">
+				<div class="eyebrow"><span class="dot"></span> The platform</div>
+				<h2 class="h-1">One control plane. Every LLM, every message.</h2>
+				<p class="lede">
+					2Trust.AI is the enterprise layer between your employees, your customers, your data, and Large Language Models. Deploy any model — OpenAI, Anthropic, Bedrock, Llama, Mistral, or self-hosted — behind unified safety, governance, and audit.
+				</p>
+			</div>
+			<div class="grid-3">
+				{
+					features.map((f) => (
+						<div class="card card-hover">
+							<div class="eyebrow"><span class="dot"></span> {f.tag}</div>
+							<h3 class="h-3" style="margin:16px 0 8px;">{f.title}</h3>
+							<p class="small" style="margin-bottom:18px;">{f.desc}</p>
+							{f.bars ? (
+								<div class="mini-ui">
+									{f.bars.map(([k, v]) => (
+										<div class="cat-bar" data-hot={v >= 0.9 ? "true" : undefined}>
+											<span style="color:var(--ink-muted);font-size:10.5px;text-transform:uppercase;">{k}</span>
+											<div class="bar"><div style={`width:${v * 100}%;`}></div></div>
+											<span class="mono" style={`font-size:10.5px;text-align:right;color:${v >= 0.9 ? "var(--danger)" : "var(--ink-muted)"};`}>{v.toFixed(2)}</span>
+										</div>
+									))}
+								</div>
+							) : (
+								<div class="mini-ui">
+									{f.body!.map(([k, v, kind]) => (
+										<div class="mini-row">
+											<span>{kind === "ok" || kind === "warn" || kind === "danger" ? <><span class={`status-dot ${kind === "danger" ? "block" : kind}`}></span>{k}</> : k}</span>
+											<span style={`color:${colorFor(kind)};`}>{v}</span>
+										</div>
+									))}
+								</div>
+							)}
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- How it works -->
+	<section class="section section-divider" style="background:var(--bg-sunken);">
+		<div class="container">
+			<div class="section-head">
+				<div class="eyebrow"><span class="dot"></span> How it works</div>
+				<h2 class="h-1">Four stages.<br />Every request.</h2>
+				<p class="lede">
+					One API call to <span class="mono">/api/v1/ai/infer</span>. From there, every prompt is screened, scored, and audited before — and after — it touches a model.
+				</p>
+			</div>
+			<div class="grid-4">
+				{
+					steps.map((s) => (
+						<div class="card">
+							<div class="mono" style="color:var(--accent);font-size:12px;">{s.n}</div>
+							<h3 class="h-3" style="margin:12px 0 10px;">{s.t}</h3>
+							<p class="small">{s.d}</p>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- Model abstraction -->
+	<section class="section">
+		<div class="container grid-2" style="gap:48px;align-items:center;">
+			<div>
+				<div class="eyebrow"><span class="dot"></span> Model abstraction</div>
+				<h2 class="h-2" style="margin-top:14px;">Switch providers without rewriting a line of application code.</h2>
+				<p class="lede" style="margin-top:16px;">
+					OpenAI (GPT-4, GPT-3.5, DALL·E), Anthropic (Claude), AWS Bedrock, OpenRouter, Llama, Mistral, and local/self-hosted LLMs. Vision and image generation included. Swap the model in an <span class="mono">LLM Configuration</span> — your apps never change.
+				</p>
+				<a href="/platform" class="btn btn-ghost" style="margin-top:22px;">
+					See all integrations
+					<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+				</a>
+			</div>
+			<div style="display:flex;flex-wrap:wrap;gap:10px;">
+				{
+					integrations.map(([n, t]) => (
+						<div class="integration-chip"><span class="chip-logo">{t}</span> {n}</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- Testimonial -->
+	<section class="section section-divider">
+		<div class="container" style="max-width:900px;">
+			<div class="eyebrow"><span class="dot"></span> Customer</div>
+			<p class="h-2" style="margin:18px 0 28px;font-weight:500;">
+				"Our board wanted a credible answer to 'how are we governing AI?' that didn't depend on any one vendor's promises. 2Trust gave us that answer — with evidence attached to every message."
+			</p>
+			<div style="display:flex;gap:14px;align-items:center;">
+				<div style="width:40px;height:40px;border-radius:50%;background:var(--bg-sunken);border:1px solid var(--hair);"></div>
+				<div>
+					<div style="font-weight:500;">Dana Okafor</div>
+					<div class="small">Chief Information Security Officer · Meridian Bank</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Dark CTA -->
+	<section class="section" style="background:var(--ink);color:var(--bg);">
+		<div class="container" style="display:flex;justify-content:space-between;gap:40px;align-items:center;flex-wrap:wrap;">
+			<div style="max-width:620px;">
+				<div class="eyebrow" style="color:var(--bg);"><span class="dot"></span> Ready to govern</div>
+				<h2 class="h-1" style="color:var(--bg);margin-top:14px;">Put every AI interaction on the record.</h2>
+				<p class="lede" style="color:color-mix(in oklab,var(--bg) 72%,transparent);margin-top:12px;">
+					Map one existing LLM integration onto <span class="mono">/api/v1/ai/infer</span> behind the Safety & Trust Layer. Stand up a governed DocumentCollection against a representative corpus. Typical pilot: 2–4 weeks.
+				</p>
+			</div>
+			<div style="display:flex;gap:10px;">
+				<a href="/contact" class="btn btn-accent btn-lg">
+					Book demo
+					<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+				</a>
+				<a href="/about" class="btn btn-ghost btn-lg" style="background:transparent;color:var(--bg);border-color:rgba(255,255,255,.25);">Trust center</a>
+			</div>
+		</div>
+	</section>
 </Base>
-
-<style>
-	.home-content {
-		max-width: var(--wide-width);
-		margin: 0 auto;
-		padding: var(--spacing-16) var(--spacing-6);
-	}
-
-	/* Featured Section - Side by side */
-	.featured-section {
-		margin-bottom: var(--spacing-16);
-	}
-
-	.featured-grid {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: var(--spacing-8);
-		align-items: center;
-	}
-
-	.featured-image-link {
-		grid-column: 1 / 3;
-		display: block;
-		/* Extend to viewport edge, but cap at -6rem minimum extension */
-		margin-left: min(
-			-6rem,
-			calc(-1 * (var(--spacing-6) + (100vw - var(--wide-width)) / 2))
-		);
-	}
-
-	.featured-image {
-		overflow: hidden;
-		border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-		background: var(--color-surface);
-	}
-
-	.featured-image img {
-		width: 100%;
-		height: auto;
-		aspect-ratio: 4 / 3;
-		object-fit: cover;
-		transition: transform 0.4s ease;
-	}
-
-	.featured-image-link:hover .featured-image img,
-	.featured-grid:has(.featured-title-link:hover) .featured-image img {
-		transform: scale(1.02);
-	}
-
-	.featured-content {
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-4);
-	}
-
-	.featured-meta {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-		column-gap: var(--spacing-3);
-		row-gap: var(--spacing-1);
-		font-size: var(--font-size-sm);
-		color: var(--color-muted);
-	}
-
-	.meta-dot {
-		width: 3px;
-		height: 3px;
-		border-radius: 50%;
-		background: var(--color-muted);
-	}
-
-	/* Featured bylines */
-	.featured-bylines {
-		display: flex;
-		align-items: center;
-		gap: 2px;
-	}
-
-	.featured-byline {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--spacing-2);
-	}
-
-	.featured-byline-avatar {
-		width: var(--avatar-size-md);
-		height: var(--avatar-size-md);
-		border-radius: 50%;
-		object-fit: cover;
-	}
-
-	.featured-byline-name {
-		font-weight: 500;
-		color: var(--color-text-secondary);
-	}
-
-	.byline-sep {
-		color: var(--color-muted);
-		margin-right: 2px;
-	}
-
-	.byline-more {
-		font-size: var(--font-size-xs);
-		color: var(--color-muted);
-		margin-left: 2px;
-	}
-
-	.featured-title-link {
-		text-decoration: none;
-		color: inherit;
-	}
-
-	.featured-title {
-		font-size: clamp(var(--font-size-2xl), 4vw, var(--font-size-4xl));
-		font-weight: 700;
-		line-height: var(--leading-tight);
-		letter-spacing: var(--tracking-tight);
-		transition: color var(--transition-fast);
-	}
-
-	.featured-title-link:hover .featured-title,
-	.featured-grid:has(.featured-image-link:hover) .featured-title {
-		color: var(--color-accent);
-	}
-
-	.featured-excerpt {
-		font-size: var(--font-size-lg);
-		line-height: var(--leading-relaxed);
-		color: var(--color-text-secondary);
-	}
-
-	.featured-tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--spacing-2);
-		margin-top: var(--spacing-2);
-	}
-
-	.featured-tag {
-		display: inline-block;
-		padding: var(--spacing-1) var(--spacing-3);
-		font-size: var(--font-size-sm);
-		color: var(--color-text-secondary);
-		background: var(--color-surface);
-		border-radius: var(--radius);
-		text-decoration: none;
-		transition:
-			color var(--transition-fast),
-			background var(--transition-fast);
-	}
-
-	.featured-tag:hover {
-		color: var(--color-text);
-		background: var(--color-border);
-	}
-
-	/* Section header */
-	.section-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		margin-bottom: var(--spacing-8);
-		padding-bottom: var(--spacing-4);
-		border-bottom: 1px solid var(--color-border-subtle);
-	}
-
-	.section-title {
-		font-size: var(--font-size-sm);
-		font-weight: 500;
-		text-transform: uppercase;
-		letter-spacing: var(--tracking-wider);
-		color: var(--color-muted);
-	}
-
-	.section-link {
-		font-size: var(--font-size-sm);
-		color: var(--color-accent);
-		text-decoration: none;
-		transition: color var(--transition-fast);
-	}
-
-	.section-link:hover {
-		color: var(--color-accent-hover);
-	}
-
-	/* Posts Grid */
-	.posts-section {
-	}
-
-	.posts-grid {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: var(--spacing-12) var(--spacing-8);
-	}
-
-	/* Empty State */
-	.empty-state {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: var(--spacing-3);
-		text-align: center;
-		padding: var(--spacing-20) var(--spacing-6);
-		max-width: 400px;
-		margin: 0 auto;
-	}
-
-	.empty-state h2 {
-		font-size: var(--font-size-2xl);
-		font-weight: 600;
-	}
-
-	.empty-state p {
-		color: var(--color-muted);
-	}
-
-	.btn {
-		display: inline-block;
-		margin-top: var(--spacing-4);
-		padding: var(--spacing-3) var(--spacing-6);
-		background: var(--color-accent);
-		color: var(--color-on-accent);
-		text-decoration: none;
-		border-radius: var(--radius);
-		font-size: var(--font-size-sm);
-		font-weight: 500;
-		transition: background var(--transition-fast);
-	}
-
-	.btn:hover {
-		background: var(--color-accent-hover);
-	}
-
-	/* Responsive */
-	@media (max-width: 900px) {
-		.home-content {
-			padding: var(--spacing-6) var(--spacing-4) var(--spacing-12);
-		}
-
-		.featured-image-link {
-			margin-left: 0;
-		}
-
-		.featured-grid {
-			grid-template-columns: 1fr;
-			gap: var(--spacing-6);
-		}
-
-		.featured-image {
-			border-radius: var(--radius-lg);
-		}
-
-		.featured-image img {
-			aspect-ratio: 16 / 9;
-		}
-
-		.posts-grid {
-			grid-template-columns: repeat(2, 1fr);
-			gap: var(--spacing-8) var(--spacing-6);
-		}
-	}
-
-	@media (max-width: 600px) {
-		.featured-title {
-			font-size: var(--font-size-2xl);
-		}
-
-		.posts-grid {
-			grid-template-columns: 1fr;
-			gap: var(--spacing-8);
-		}
-	}
-</style>

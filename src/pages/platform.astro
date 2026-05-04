@@ -1,0 +1,409 @@
+---
+import Base from "../layouts/Base.astro";
+
+const docs = [
+	{ n: "enterprise-handbook-2026.pdf", sz: "4.2 MB", st: "trained", ch: 412 },
+	{ n: "finance-policy-v8.docx", sz: "1.8 MB", st: "trained", ch: 189 },
+	{ n: "soc2-controls-matrix.xlsx", sz: "680 KB", st: "processing", ch: "—" },
+	{ n: "eu-ai-act-risk-memo.pdf", sz: "2.1 MB", st: "trained", ch: 224 },
+	{ n: "incident-runbook.md", sz: "42 KB", st: "trained", ch: 18 },
+	{ n: "product-spec-q2.pptx", sz: "12.4 MB", st: "pending", ch: "—" },
+];
+
+const models = [
+	{ n: "claude-sonnet-4.5", p: "Anthropic", st: "approved", v: true, u: "2.4M/d" },
+	{ n: "gpt-4o", p: "OpenAI", st: "approved", v: true, u: "1.8M/d" },
+	{ n: "claude-haiku-4.5", p: "Anthropic", st: "approved", v: false, u: "6.1M/d" },
+	{ n: "mistral-large-2", p: "Mistral", st: "review", v: false, u: "42k/d" },
+	{ n: "llama-3.1-70b-instruct", p: "Bedrock", st: "approved", v: false, u: "310k/d" },
+	{ n: "local/llama-3.1-8b", p: "LocalLLM", st: "approved", v: false, u: "58k/d" },
+	{ n: "dall-e-3", p: "OpenAI (Image)", st: "approved", v: false, u: "4k/d" },
+];
+
+const events = [
+	{ t: "14:22:41.103", s: "info", a: "alex.chen@meridian", x: "message.approved", d: "config=customer-svc.v4 · scores.max=0.06" },
+	{ t: "14:22:40.918", s: "warn", a: "priya.r@halcyon", x: "message.flagged", d: "flag=sensitive · score=0.82 · custom-message shown" },
+	{ t: "14:22:39.674", s: "block", a: "ben.wu@verax", x: "message.blocked", d: "flag=disallowed · list=pii.financial.v3" },
+	{ t: "14:22:38.512", s: "block", a: "agent/support-bot", x: "message.blocked", d: "flag=impersonation · classifier=0.93" },
+	{ t: "14:22:37.244", s: "info", a: "mcp://ext-crm", x: "message.approved", d: "mcp_service=crm-sync · tokens_out=840" },
+	{ t: "14:22:36.001", s: "info", a: "ciso.admin", x: "filter.updated", d: "name=customer-svc.output.v4 · history via simple-history" },
+	{ t: "14:22:35.612", s: "warn", a: "j.patel@arcadia", x: "message.flagged", d: "flag=politics · score=0.88" },
+];
+
+const thresholds: Array<[string, number]> = [
+	["religion", 0.9],
+	["politics", 0.9],
+	["gender", 0.9],
+	["race", 0.9],
+	["violence", 0.85],
+	["sensitive", 0.8],
+];
+
+const allLists = [
+	"global.v2026-Q2",
+	"finance.mnpi.v7",
+	"hr.protected-class.v3",
+	"legal.privilege.v2",
+	"healthcare.phi.v5",
+];
+const activeLists = new Set(["global.v2026-Q2", "finance.mnpi.v7"]);
+
+const deploys = [
+	{ tag: "IN-VPC", title: "Deploy inside your VPC", desc: "Docker, AWS CodePipeline + CodeDeploy, ECR, S3. Runs in your account. No prompts or documents cross to a multi-tenant service." },
+	{ tag: "HYBRID", title: "Managed control plane", desc: "We host the console; your inference, documents, and message storage stay in your cloud. Fastest path to pilot." },
+	{ tag: "SOVEREIGN", title: "Air-gap / in-VPC", desc: "Offline install for regulated environments. NIST AI RMF-aligned. Hardware-backed keys. Local-LLM runtime with FP16/INT8 quantization." },
+];
+---
+
+<Base
+	title="Platform — 2Trust.AI"
+	description="Safety, compliance, model abstraction, and document intelligence — one product, not four."
+>
+	<section class="section" style="padding-bottom:0;">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> Platform</div>
+			<h1 class="h-1" style="margin:18px 0 14px;max-width:20ch;">
+				The governance substrate for every AI your enterprise ships.
+			</h1>
+			<p class="lede" style="margin-bottom:28px;">
+				Safety, compliance, model abstraction, and document intelligence — one product, not four. Explore the modules below.
+			</p>
+			<div class="tab-row" role="tablist">
+				<button class="tab" role="tab" data-active="true" data-panel="filters">Filters & Safety</button>
+				<button class="tab" role="tab" data-panel="workbench">Document Workbench</button>
+				<button class="tab" role="tab" data-panel="registry">Model Configs</button>
+				<button class="tab" role="tab" data-panel="audit">Audit Trail</button>
+			</div>
+		</div>
+	</section>
+
+	<section class="section">
+		<div class="container">
+			<!-- Filters panel -->
+			<div data-panel="filters">
+				<div style="margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+					<div>
+						<div class="eyebrow"><span class="dot"></span> LIVE · Interactive demo</div>
+						<h2 class="h-2" style="margin-top:10px;">Configure a filter. Watch it compile.</h2>
+					</div>
+					<div style="display:flex;gap:8px;">
+						<button class="btn btn-ghost">View in admin</button>
+						<button class="btn btn-primary">
+							Attach to config
+							<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+						</button>
+					</div>
+				</div>
+				<div class="pb-wrap">
+					<div class="pb-col">
+						<h5>Six-category thresholds</h5>
+						{
+							thresholds.map(([k, v]) => (
+								<div class="threshold-row">
+									<span style="color:var(--ink-2);text-transform:capitalize;">{k}</span>
+									<input type="range" min="0" max="1" step="0.05" value={v} data-cat={k} />
+									<span class="val" data-val={k}>{v.toFixed(2)}</span>
+								</div>
+							))
+						}
+						<div style="margin-top:20px;">
+							<h5 style="margin-bottom:8px;">Classifiers</h5>
+							<div class="toggle-row"><span style="font-size:13px;">Prompt-hacking</span><button class="switch" data-on="true" data-toggle="hacking" aria-label="Toggle prompt-hacking classifier"></button></div>
+							<div class="toggle-row" style="margin-top:8px;"><span style="font-size:13px;">Impersonation</span><button class="switch" data-on="true" data-toggle="impersonation" aria-label="Toggle impersonation classifier"></button></div>
+						</div>
+						<div style="margin-top:20px;">
+							<h5 style="margin-bottom:8px;">Disallowed lists</h5>
+							{
+								allLists.map((l) => (
+									<div class="pb-block" data-active={activeLists.has(l) ? "true" : "false"} data-list={l}>
+										<div class="label">
+											<span>{l}</span>
+											<span class="mono">v{String(Math.abs(l.length * 3 - 7)).padStart(2, "0")}</span>
+										</div>
+									</div>
+								))
+							}
+						</div>
+					</div>
+
+					<div class="pb-col pb-canvas">
+						<div class="pb-canvas-grid"></div>
+						<div class="pb-flow" style="position:relative;z-index:1;max-width:480px;margin:0 auto;">
+							<div class="pb-node ingress"><span class="mono">01 · INPUT RECEIVED</span>Prompt from user or MCP · logged · encrypted</div>
+							<div style="position:relative;height:32px;"><div class="pb-arrow"></div></div>
+							<div class="pb-node rule">
+								<span class="mono">02 · CLASSIFIERS</span>
+								<span id="pb-classifiers">prompt-hacking · impersonation · disallowed-lists (2)</span>
+							</div>
+							<div style="position:relative;height:32px;"><div class="pb-arrow"></div></div>
+							<div class="pb-node rule">
+								<span class="mono">03 · SIX-CATEGORY SCORE</span>
+								<span id="pb-scores">religion≥0.90 · politics≥0.90 · gender≥0.90 · race≥0.90 · violence≥0.85 · sensitive≥0.80</span>
+							</div>
+							<div style="position:relative;height:32px;"><div class="pb-arrow"></div></div>
+							<div class="pb-node deny" id="pb-action-node">
+								<span class="mono" id="pb-action-title">04 · ON MATCH · BLOCK</span>
+								<span id="pb-action-desc">Block. Return custom message. Log with flag.</span>
+							</div>
+							<div style="position:relative;height:32px;"><div class="pb-arrow"></div></div>
+							<div class="pb-node egress"><span class="mono">05 · AUDIT WRITE</span>Message + scores + flags → encrypted audit log</div>
+						</div>
+					</div>
+
+					<div class="pb-col">
+						<h5>Inspector</h5>
+						<div class="pb-field"><label>Filter name</label><input class="pb-input" value="customer-svc.output.v4" /></div>
+						<div class="pb-field">
+							<label>On match</label>
+							<div class="pb-chip-row">
+								<span class="pb-chip" data-active="true" data-action="block">block</span>
+								<span class="pb-chip" data-action="redact">redact</span>
+								<span class="pb-chip" data-action="warn">warn</span>
+							</div>
+						</div>
+						<div class="pb-field">
+							<label>Custom block messages</label>
+							<div style="font-size:11.5px;font-family:var(--font-mono);color:var(--ink-muted);line-height:1.5;">
+								sensitive → "I can't help with that topic. Try rephrasing."<br />
+								politics → "This assistant doesn't discuss politics."<br />
+								violence → "Blocked for safety."
+							</div>
+						</div>
+						<div class="pb-field">
+							<label>Compiled</label>
+							<pre class="doc-snippet" id="pb-compiled" style="font-size:11px;"></pre>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Workbench panel -->
+			<div data-panel="workbench" hidden>
+				<div class="table-wrap">
+					<div style="border:1px solid var(--hair-2);border-radius:12px;overflow:hidden;background:var(--bg-elevated);">
+						<div style="padding:14px 20px;border-bottom:1px solid var(--hair);display:flex;justify-content:space-between;align-items:center;">
+							<div>
+								<div class="mono" style="font-size:12px;color:var(--ink-muted);">DOCUMENT COLLECTION · meridian-policy-kb</div>
+								<div style="font-size:13px;margin-top:4px;">pgvector · embedder: openai · chunk 1024 / overlap 128 · 3 granularities</div>
+							</div>
+							<button class="btn btn-primary" style="font-size:12px;">+ Upload documents</button>
+						</div>
+						<div style="display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr 90px;padding:10px 20px;border-bottom:1px solid var(--hair);font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.08em;">
+							<span>Document</span><span>Size</span><span>Status</span><span>Chunks</span><span></span>
+						</div>
+						{
+							docs.map((d) => (
+								<div style="display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr 90px;padding:14px 20px;border-bottom:1px solid var(--hair);font-size:13.5px;align-items:center;">
+									<span>{d.n}</span>
+									<span style="color:var(--ink-muted);">{d.sz}</span>
+									<span><span class={`pill ${d.st === "trained" ? "pill-ok" : d.st === "processing" ? "pill-warn" : "pill"}`} style="font-size:11px;">{d.st}</span></span>
+									<span class="mono" style="color:var(--ink-muted);">{d.ch}</span>
+									<button class="btn btn-quiet" style="justify-self:end;font-size:12px;">View →</button>
+								</div>
+							))
+						}
+						<div style="padding:16px 20px;border-top:1px solid var(--hair);background:var(--bg-sunken);font-family:var(--font-mono);font-size:11.5px;color:var(--ink-muted);">
+							Supports PDF · DOCX · PPTX · XLSX · HTML · TXT · JSON · YAML · XML · MD · PY · JS · JAVA · C/C++
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Registry panel -->
+			<div data-panel="registry" hidden>
+				<div class="table-wrap">
+					<div style="border:1px solid var(--hair-2);border-radius:12px;overflow:hidden;background:var(--bg-elevated);">
+						<div style="padding:14px 20px;border-bottom:1px solid var(--hair);display:flex;justify-content:space-between;align-items:center;">
+							<div class="mono" style="font-size:12px;color:var(--ink-muted);">LLM MODELS · 7 OF 24</div>
+							<button class="btn btn-ghost" style="font-size:12px;">+ Register model</button>
+						</div>
+						<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 80px;padding:10px 20px;border-bottom:1px solid var(--hair);font-family:var(--font-mono);font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.08em;">
+							<span>Model</span><span>Provider</span><span>Status</span><span>Vision</span><span>Usage</span><span></span>
+						</div>
+						{
+							models.map((m) => (
+								<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 80px;padding:14px 20px;border-bottom:1px solid var(--hair);font-size:13.5px;align-items:center;">
+									<span class="mono" style="font-size:12.5px;">{m.n}</span>
+									<span style="color:var(--ink-muted);">{m.p}</span>
+									<span><span class={`pill ${m.st === "approved" ? "pill-ok" : m.st === "review" ? "pill-warn" : "pill-danger"}`} style="font-size:11px;">{m.st}</span></span>
+									<span style={`color:${m.v ? "var(--ok)" : "var(--ink-subtle)"};`}>{m.v ? "✓ enabled" : "—"}</span>
+									<span class="mono" style="color:var(--ink-muted);">{m.u}</span>
+									<button class="btn btn-quiet" style="justify-self:end;font-size:12px;">View →</button>
+								</div>
+							))
+						}
+					</div>
+				</div>
+			</div>
+
+			<!-- Audit panel -->
+			<div data-panel="audit" hidden>
+				<div class="table-wrap">
+					<div style="border:1px solid var(--hair-2);border-radius:12px;overflow:hidden;background:var(--bg-elevated);font-family:var(--font-mono);font-size:12px;">
+						<div style="padding:14px 20px;border-bottom:1px solid var(--hair);display:flex;justify-content:space-between;align-items:center;background:var(--bg-sunken);">
+							<span style="color:var(--ink-muted);font-size:11px;">MODERATION LOG · ENCRYPTED AT REST · SIMPLE-HISTORY BACKED</span>
+							<span style="color:var(--ok);font-size:11px;">● LIVE · auditor read-only</span>
+						</div>
+						{
+							events.map((e) => (
+								<div style="display:grid;grid-template-columns:130px 70px 220px 180px 1fr;padding:12px 20px;border-bottom:1px solid var(--hair);align-items:center;gap:16px;">
+									<span style="color:var(--ink-muted);">{e.t}</span>
+									<span style={`color:${e.s === "block" ? "var(--danger)" : e.s === "warn" ? "oklch(.55 .15 70)" : "var(--ok)"};`}>{e.s.toUpperCase()}</span>
+									<span style="color:var(--ink-2);">{e.a}</span>
+									<span style="color:var(--ink);">{e.x}</span>
+									<span style="color:var(--ink-muted);">{e.d}</span>
+								</div>
+							))
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Deploy shapes -->
+	<section class="section section-divider">
+		<div class="container">
+			<div class="section-head">
+				<div class="eyebrow"><span class="dot"></span> Deploy</div>
+				<h2 class="h-1">One control plane.<br />Every deployment shape.</h2>
+			</div>
+			<div class="grid-3">
+				{
+					deploys.map((d) => (
+						<div class="card">
+							<div class="eyebrow"><span class="dot"></span> {d.tag}</div>
+							<h3 class="h-3" style="margin:14px 0 8px;">{d.title}</h3>
+							<p class="small">{d.desc}</p>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+</Base>
+
+<script>
+	// Tab switcher
+	const tabs = document.querySelectorAll<HTMLElement>(".tab[data-panel]");
+	const panels = document.querySelectorAll<HTMLElement>("[data-panel]:not(.tab)");
+	tabs.forEach((t) =>
+		t.addEventListener("click", () => {
+			const name = t.dataset.panel;
+			tabs.forEach((tt) => tt.setAttribute("data-active", String(tt === t)));
+			panels.forEach((p) => {
+				if (p.classList.contains("tab")) return;
+				p.hidden = p.dataset.panel !== name;
+			});
+		})
+	);
+
+	// Policy-builder interactivity
+	const catInputs = document.querySelectorAll<HTMLInputElement>('input[data-cat]');
+	const state = {
+		cats: {
+			religion: 0.9,
+			politics: 0.9,
+			gender: 0.9,
+			race: 0.9,
+			violence: 0.85,
+			sensitive: 0.8,
+		} as Record<string, number>,
+		classifiers: { hacking: true, impersonation: true },
+		lists: new Set(["global.v2026-Q2", "finance.mnpi.v7"]),
+		action: "block" as "block" | "redact" | "warn",
+	};
+
+	function recompile() {
+		const activeClassifiers: string[] = [];
+		if (state.classifiers.hacking) activeClassifiers.push("hacking");
+		if (state.classifiers.impersonation) activeClassifiers.push("impersonation");
+
+		const listsArr = Array.from(state.lists);
+		const classifiers = document.getElementById("pb-classifiers");
+		if (classifiers) {
+			classifiers.textContent =
+				(state.classifiers.hacking ? "prompt-hacking · " : "") +
+				(state.classifiers.impersonation ? "impersonation · " : "") +
+				`disallowed-lists (${listsArr.length})`;
+		}
+		const scoresEl = document.getElementById("pb-scores");
+		if (scoresEl) {
+			scoresEl.textContent = Object.entries(state.cats)
+				.map(([k, v]) => `${k}≥${v.toFixed(2)}`)
+				.join("  ·  ");
+		}
+
+		const actionNode = document.getElementById("pb-action-node");
+		const actionTitle = document.getElementById("pb-action-title");
+		const actionDesc = document.getElementById("pb-action-desc");
+		if (actionNode && actionTitle && actionDesc) {
+			actionNode.classList.remove("deny", "action");
+			actionNode.classList.add(state.action === "block" ? "deny" : "action");
+			actionTitle.textContent = `04 · ON MATCH · ${state.action.toUpperCase()}`;
+			actionDesc.textContent =
+				state.action === "block"
+					? "Block. Return custom message. Log with flag."
+					: state.action === "redact"
+					? "Redact offending spans. Forward scrubbed prompt."
+					: "Allow. Flag in moderation logs. Notify inline.";
+		}
+
+		const compiled = document.getElementById("pb-compiled");
+		if (compiled) {
+			const lines = Object.entries(state.cats)
+				.map(([k, v]) => `    ${k} = ${v.toFixed(2)}`)
+				.join("\n");
+			compiled.textContent =
+				'filter "customer-svc.output.v4" {\n' +
+				"  thresholds = {\n" +
+				lines +
+				"\n  }\n" +
+				`  classifiers = [${activeClassifiers.map((s) => `"${s}"`).join(", ")}]\n` +
+				`  disallowed  = [${listsArr.map((l) => `"${l}"`).join(", ")}]\n` +
+				`  on_match    = "${state.action}"\n` +
+				"}";
+		}
+	}
+
+	catInputs.forEach((i) => {
+		i.addEventListener("input", () => {
+			const k = i.dataset.cat!;
+			state.cats[k] = parseFloat(i.value);
+			const val = document.querySelector(`[data-val="${k}"]`);
+			if (val) val.textContent = state.cats[k].toFixed(2);
+			recompile();
+		});
+	});
+
+	document.querySelectorAll<HTMLButtonElement>("button[data-toggle]").forEach((btn) => {
+		btn.addEventListener("click", () => {
+			const key = btn.dataset.toggle as "hacking" | "impersonation";
+			state.classifiers[key] = !state.classifiers[key];
+			btn.setAttribute("data-on", String(state.classifiers[key]));
+			recompile();
+		});
+	});
+
+	document.querySelectorAll<HTMLElement>(".pb-block[data-list]").forEach((el) => {
+		el.addEventListener("click", () => {
+			const l = el.dataset.list!;
+			if (state.lists.has(l)) state.lists.delete(l);
+			else state.lists.add(l);
+			el.setAttribute("data-active", String(state.lists.has(l)));
+			recompile();
+		});
+	});
+
+	document.querySelectorAll<HTMLElement>(".pb-chip[data-action]").forEach((el) => {
+		el.addEventListener("click", () => {
+			state.action = el.dataset.action as "block" | "redact" | "warn";
+			document.querySelectorAll<HTMLElement>(".pb-chip[data-action]").forEach((c) =>
+				c.setAttribute("data-active", String(c === el))
+			);
+			recompile();
+		});
+	});
+
+	recompile();
+</script>

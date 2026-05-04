@@ -23,17 +23,24 @@ const error = Astro.url.searchParams.get("error");
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" style="color:var(--accent);flex-shrink:0;"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"></path><path d="M9 12l2 2 4-4"></path></svg>
 						<strong>Request received.</strong>
 					</div>
-					<p style="color:var(--ink-muted);margin:0;">We'll be in touch within one business day to schedule your demo. Check your inbox at the email you provided.</p>
+					<p style="color:var(--ink-muted);margin:0;">We'll be in touch within one business day to schedule your demo.</p>
 					<a href="/" class="btn btn-quiet" style="margin-top:4px;">Back to home</a>
 				</div>
 			) : (
-				<form class="card" style="margin-top:32px;display:grid;gap:16px;" method="post" action="/api/contact" novalidate>
-					{error === "invalid-email" && (
-						<p style="color:#e53e3e;font-size:14px;margin:0;">Please enter a valid email address.</p>
+				<form
+					class="card"
+					style="margin-top:32px;display:grid;gap:16px;"
+					method="post"
+					action="/_emdash/forms/submit"
+					novalidate
+				>
+					<input type="hidden" name="formId" value="demo-request" />
+					{error && (
+						<p style="color:#e53e3e;font-size:14px;margin:0;">Something went wrong. Please try again.</p>
 					)}
 					<div class="pb-field" style="margin:0;">
 						<label>Work email</label>
-						<input class="pb-input" type="email" name="email" required placeholder="name@company.com" />
+						<input class="pb-input" type="email" name="work_email" required placeholder="name@company.com" />
 					</div>
 					<div class="pb-field" style="margin:0;">
 						<label>Company</label>
@@ -41,7 +48,7 @@ const error = Astro.url.searchParams.get("error");
 					</div>
 					<div class="pb-field" style="margin:0;">
 						<label>What are you governing?</label>
-						<textarea class="pb-input" name="message" rows="4" placeholder="Model, deployment, audience, any regulators involved."></textarea>
+						<textarea class="pb-input" name="what_are_you_governing" rows="4" placeholder="Model, deployment, audience, any regulators involved."></textarea>
 					</div>
 					<div style="display:flex;gap:10px;align-items:center;">
 						<button type="submit" class="btn btn-primary btn-lg">

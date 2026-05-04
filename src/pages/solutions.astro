@@ -1,0 +1,55 @@
+---
+import Base from "../layouts/Base.astro";
+
+const solutions = [
+	{ tag: "FINANCIAL SERVICES", title: "Protect MNPI and client data across every AI tool.", desc: "Block SSNs, account numbers, and MNPI in prompts with the disallowed-list engine. Rescore every response across six categories. Evidence for SEC, FINRA, and NYDFS — encrypted at rest.", kpis: [["24×7", "moderation log"], ["0", "MNPI leaks in prod"]] },
+	{ tag: "HEALTHCARE", title: "HIPAA-aligned AI for patient-facing workflows.", desc: "Enforce de-identification before PHI reaches a model. Run on approved BAAs with per-org data isolation. Ship clinical AI tooling without the compliance ambiguity.", kpis: [["100%", "messages logged"], ["24×7", "PHI filtering"]] },
+	{ tag: "PUBLIC SECTOR", title: "Sovereign, in-VPC governance for agency AI.", desc: "Deploy fully inside your cloud. FIPS-ready crypto path. Mapped to NIST AI RMF and EU AI Act–style risk scoring. Air-gap capable.", kpis: [["NIST AI RMF", "mapped"], ["In-VPC", "Docker + AWS"]] },
+	{ tag: "LEGAL", title: "Privilege-aware AI for law firms and in-house teams.", desc: "Matter-scoped DocumentCollections. Conflict-of-interest disallowed lists. Full audit trail with django-simple-history for configuration changes.", kpis: [["Matter", "scoped RBAC"], ["0", "privilege breaches"]] },
+	{ tag: "ENTERPRISE IT", title: "One control plane for every AI deployment.", desc: "Whether teams use OpenAI, Anthropic, Bedrock, or homegrown local LLMs — 2Trust sees it, governs it, and ships evidence. Multi-tenant parent/child orgs.", kpis: [["1", "integration surface"], ["Any", "provider supported"]] },
+	{ tag: "PHARMA & LIFE SCIENCES", title: "GxP-aware AI governance for regulated research.", desc: "Validated workflows for research teams. Controlled vocabularies as disallowed lists. Evidence artifacts suitable for FDA and EMA submission packets.", kpis: [["Validated", "workflows"], ["GxP", "aligned"]] },
+];
+---
+
+<Base
+	title="Solutions — 2Trust.AI"
+	description="Built for regulated industries. Deployed inside your VPC."
+>
+	<section class="section" style="padding-bottom:40px;">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> Solutions</div>
+			<h1 class="h-1" style="margin:18px 0 14px;max-width:20ch;">
+				Built for regulated industries. Deployed inside your VPC.
+			</h1>
+			<p class="lede">
+				Every industry has its own data to protect and its own regulator to answer to. 2Trust ships pre-tuned filters, disallowed lists, and risk-wizard templates for the frameworks that matter most.
+			</p>
+		</div>
+	</section>
+
+	<section class="section" style="padding-top:20px;">
+		<div class="container">
+			<div class="grid-3">
+				{
+					solutions.map((s) => (
+						<div class="sol-card">
+							<span class="tag">{s.tag}</span>
+							<h3 class="h-3" style="margin:0;">{s.title}</h3>
+							<p class="small" style="flex:1;">{s.desc}</p>
+							<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-top:12px;border-top:1px solid var(--hair);">
+								{
+									s.kpis.map(([n, l]) => (
+										<div>
+											<div class="mono" style="font-size:18px;letter-spacing:-.02em;color:var(--ink);">{n}</div>
+											<div class="small" style="font-size:11.5px;">{l}</div>
+										</div>
+									))
+								}
+							</div>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+</Base>

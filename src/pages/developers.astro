@@ -1,0 +1,167 @@
+---
+import Base from "../layouts/Base.astro";
+
+const inferSnippet = `POST /api/v1/ai/infer
+Authorization: Token <key>
+
+{
+  "config_id": "<uuid>",
+  "messages": [
+    {"role":"user","content":"Summarize Q3..."}
+  ],
+  "image_urls": []
+}
+
+→  { "message_id": "...",
+      "content": "...",
+      "flags": { "attack": false,
+                 "impersonation": false,
+                 "disallowed": false,
+                 "sensitive": false },
+      "validation_scores": {
+        "religion":0.01, "politics":0.04,
+        "gender":0.00, "race":0.01,
+        "violence":0.02, "sensitive":0.06 },
+      "tokens_used": { "prompt":120,"completion":88 } }`;
+
+const kbSnippet = `POST /api/v1/kb/search
+{ "collection_id": "<uuid>",
+  "query": "revenue recognition policy",
+  "top_k": 5 }
+
+POST /api/v1/kb/train
+{ "collection_id": "<uuid>",
+  "document_id":   "<uuid>" }
+
+→  { "job_id": "<uuid>" }
+
+GET  /api/v1/jobs/<job_id>/status
+→  { "status": "succeeded" }`;
+
+const modSnippet = `POST /api/v1/moderation/moderate
+{ "text": "..." }
+
+POST /api/v1/moderation/redact
+{ "text": "..." }
+
+→  { "flags": { "sensitive": true },
+      "scores": { "religion":0.02, ... },
+      "redacted": "Please contact me at [EMAIL]." }`;
+
+const mcpSnippet = `// External MCP server calls 2Trust on org's behalf:
+fetch("/api/v1/ai/infer", {
+  headers: {
+    "Authorization": "Token mcp_sa_4f2a...",
+    "Content-Type":  "application/json"
+  },
+  body: JSON.stringify({
+    config_id: "<uuid>",
+    messages:  [...],
+    meta:      { mcp_tool: "crm.sync" }
+  })
+});`;
+
+const quickLinks = [
+	"Quickstart",
+	"/api/v1/ai/infer",
+	"/api/v1/kb/search",
+	"/api/v1/kb/train",
+	"/api/v1/moderation/*",
+	"/api/v1/jobs/*",
+	"MCP service accounts",
+	"Webhooks",
+	"Auth0 SSO",
+	"Self-hosted install",
+	"Docker + CodeDeploy",
+	"pgvector setup",
+];
+
+const stack: Array<[string, string]> = [
+	["Backend", "Django 4.2 + DRF · Python 3.10+"],
+	["Data", "PostgreSQL + pgvector"],
+	["Async", "Redis + Celery 5.3"],
+	["ML", "PyTorch 2.1 · HF Transformers · FP16/INT8"],
+	["Frontend", "Django templates · Tailwind 3.4"],
+	["Deploy", "Docker · CodePipeline · CodeDeploy · ECR"],
+	["Identity", "Auth0 OAuth2 · Django Allauth"],
+	["Observability", "ErrorLog · simple-history · perf dash"],
+];
+---
+
+<Base
+	title="Developers — 2Trust.AI"
+	description="A versioned REST API, native MCP support, and token-based auth. From zero to governed in under an hour."
+>
+	<section class="section" style="padding-bottom:20px;">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> Developers</div>
+			<h1 class="h-1" style="margin:18px 0 14px;max-width:20ch;">
+				From zero to governed in under an hour.
+			</h1>
+			<p class="lede">
+				A versioned REST API (<span class="mono">/api/v1/</span>), native MCP support, and token-based auth. Async training via Celery + Redis. pgvector-native knowledge base.
+			</p>
+		</div>
+	</section>
+
+	<section class="section" style="padding-top:20px;">
+		<div class="container">
+			<div class="grid-2">
+				<div class="doc-card">
+					<div class="eyebrow"><span class="dot"></span> POST · /API/V1/AI/INFER</div>
+					<h3 class="h-3" style="margin:6px 0;">Governed LLM inference</h3>
+					<p class="small">Runs input filter + classifiers, calls the configuration's model, screens output. Returns flags and the six validation scores.</p>
+					<pre class="doc-snippet">{inferSnippet}</pre>
+				</div>
+
+				<div class="doc-card">
+					<div class="eyebrow"><span class="dot"></span> KNOWLEDGE BASE</div>
+					<h3 class="h-3" style="margin:6px 0;">Search & train DocumentCollections</h3>
+					<p class="small">Semantic + full-text hybrid retrieval over pgvector. Training is async — poll a job ID or subscribe via webhook.</p>
+					<pre class="doc-snippet">{kbSnippet}</pre>
+				</div>
+
+				<div class="doc-card">
+					<div class="eyebrow"><span class="dot"></span> MODERATION · AS-A-SERVICE</div>
+					<h3 class="h-3" style="margin:6px 0;">Moderate or redact arbitrary text</h3>
+					<p class="small">Standalone endpoints. Use before storing user-generated content downstream, or as a governance pass on legacy pipelines.</p>
+					<pre class="doc-snippet">{modSnippet}</pre>
+				</div>
+
+				<div class="doc-card">
+					<div class="eyebrow"><span class="dot"></span> MCP · SERVICE ACCOUNTS</div>
+					<h3 class="h-3" style="margin:6px 0;">Governed tool calls from external MCP servers</h3>
+					<p class="small">Org-scoped service accounts. Tokens shown once, hashed at rest, instant-revoke. Every MCP-initiated message is filtered, scored, and audit-logged.</p>
+					<pre class="doc-snippet">{mcpSnippet}</pre>
+				</div>
+			</div>
+
+			<div style="margin-top:32px;display:flex;flex-wrap:wrap;gap:10px;">
+				{quickLinks.map((x) => <span class="pill">{x}</span>)}
+			</div>
+
+			<div style="margin-top:48px;padding:28px;border-radius:12px;background:var(--bg-sunken);border:1px solid var(--hair);">
+				<div class="eyebrow"><span class="dot"></span> Stack</div>
+				<h3 class="h-3" style="margin:10px 0 14px;">Open, inspectable, deployable in your VPC.</h3>
+				<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;font-family:var(--font-mono);font-size:12px;">
+					{
+						stack.map(([k, v]) => (
+							<div style="padding:12px 14px;background:var(--bg-elevated);border:1px solid var(--hair);border-radius:8px;">
+								<div style="color:var(--ink-muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em;">{k}</div>
+								<div style="color:var(--ink);margin-top:4px;">{v}</div>
+							</div>
+						))
+					}
+				</div>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<style>
+	@media (max-width: 900px) {
+		.grid-2 + div {
+			grid-template-columns: repeat(2, 1fr) !important;
+		}
+	}
+</style>
