@@ -1,0 +1,128 @@
+---
+import Base from "../layouts/Base.astro";
+
+const partners = [
+	{
+		name: "Carahsoft",
+		type: "Government Distribution Partner",
+		url: "https://www.carahsoft.com",
+		description: "Carahsoft Technology Corp is the Trusted Government IT Solutions Provider℠. As 2Trust.AI's master government aggregator, Carahsoft makes 2Trust available through GSA Schedule, NASA SEWP, NASPO ValuePoint, and other major contract vehicles — giving federal, state, local, and education agencies a compliant, streamlined procurement path.",
+		tags: ["Federal", "State & Local", "SLED", "GSA Schedule", "NASA SEWP"],
+	},
+	{
+		name: "Innovaite",
+		type: "Implementation & Advisory Partner",
+		url: "https://www.innovaite.com",
+		description: "Innovaite is a technology consulting firm specializing in AI strategy, architecture, and implementation for regulated enterprises. As a 2Trust.AI implementation partner, Innovaite delivers end-to-end deployments — from AI risk assessment and policy design through integration, validation, and ongoing governance operations.",
+		tags: ["AI Strategy", "Implementation", "Regulated Industries", "Compliance Advisory"],
+	},
+];
+
+const partnerTypes = [
+	{
+		title: "Technology Partners",
+		desc: "AI providers, cloud platforms, security vendors, and GRC tools that integrate with 2Trust to extend its governance surface.",
+	},
+	{
+		title: "Channel & Distribution Partners",
+		desc: "Government aggregators, value-added resellers, and distributors who bring 2Trust to enterprise and public sector buyers through established procurement vehicles.",
+	},
+	{
+		title: "Implementation & Advisory Partners",
+		desc: "Consulting firms, system integrators, and compliance advisories who deploy, configure, and operate 2Trust for their clients in regulated environments.",
+	},
+];
+---
+
+<Base
+	title="Partners — 2Trust.AI"
+	description="2Trust.AI's partner ecosystem: government distributors, technology integrators, and implementation advisories for regulated enterprises."
+>
+	<section class="section" style="padding-bottom:40px;">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> Partners</div>
+			<h1 class="h-1" style="margin:18px 0 14px;max-width:22ch;">
+				Built with the right partners.
+			</h1>
+			<p class="lede">
+				Governing AI in regulated industries requires more than software. It requires distribution channels, implementation expertise, and compliance advisory that understands the stakes. Our partners extend 2Trust.AI's reach across government, enterprise, and regulated verticals.
+			</p>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> Partners</div>
+			<h2 class="h-2" style="margin:14px 0 40px;">Our partners.</h2>
+			<div style="display:flex;flex-direction:column;gap:28px;">
+				{partners.map((p) => (
+					<div class="card partner-card">
+						<div class="partner-header">
+							<div>
+								<div class="mono" style="font-size:11px;color:var(--accent);margin-bottom:6px;">{p.type.toUpperCase()}</div>
+								<h3 style="margin:0 0 4px;font-size:22px;font-weight:700;">{p.name}</h3>
+							</div>
+							<a href={p.url} target="_blank" rel="noopener noreferrer" class="btn btn-quiet" style="flex-shrink:0;font-size:13px;">
+								Visit site
+								<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M7 3H3v10h10V9M13 3H9m4 0v4m0-4L7 9"></path></svg>
+							</a>
+						</div>
+						<p style="color:var(--ink-muted);margin:16px 0;line-height:1.7;">{p.description}</p>
+						<div style="display:flex;flex-wrap:wrap;gap:8px;">
+							{p.tags.map((t) => (
+								<span class="tag" style="font-size:11px;">{t}</span>
+							))}
+						</div>
+					</div>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container">
+			<div class="eyebrow"><span class="dot"></span> Partner program</div>
+			<h2 class="h-2" style="margin:14px 0 32px;max-width:28ch;">Three ways to partner with 2Trust.AI.</h2>
+			<div class="grid-3">
+				{partnerTypes.map((t) => (
+					<div class="card">
+						<h4 style="margin:0 0 10px;">{t.title}</h4>
+						<p class="small">{t.desc}</p>
+					</div>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container" style="max-width:680px;">
+			<div class="eyebrow"><span class="dot"></span> Become a partner</div>
+			<h2 class="h-2" style="margin:14px 0 16px;">Interested in partnering?</h2>
+			<p style="color:var(--ink-muted);margin:0 0 28px;line-height:1.7;">
+				We work with technology vendors, government IT distributors, systems integrators, and compliance advisories who serve regulated enterprises. If your clients face AI governance obligations — and they do — let's talk about how 2Trust can extend your offering.
+			</p>
+			<div style="display:flex;gap:12px;flex-wrap:wrap;">
+				<a href="/contact" class="btn btn-primary btn-lg">
+					Get in touch
+					<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+				</a>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.partner-card {
+		display: flex;
+		flex-direction: column;
+	}
+	.partner-header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 16px;
+	}
+	@media (max-width: 500px) {
+		.partner-header { flex-direction: column; }
+	}
+</style>
