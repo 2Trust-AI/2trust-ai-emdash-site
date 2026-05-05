@@ -1,0 +1,55 @@
+---
+import Base from "../../layouts/Base.astro";
+
+const releases = [
+	{
+		date: "April 27, 2026",
+		href: "/partners/press-releases/carahsoft-partnership",
+		headline: "2Trust.AI and Carahsoft Partner to Bring AI Governance Solutions to the Public Sector",
+		summary: "Carahsoft will serve as 2Trust.AI's Public Sector distributor, making the platform available through SEWP V, ITES-SW2, NASPO ValuePoint, TIPS, OMNIA Partners, E&I, and The Quilt contracts.",
+		source: "Carahsoft Technology Corp.",
+	},
+];
+---
+
+<Base
+	title="Press Releases — 2Trust.AI"
+	description="Latest press releases and news from 2Trust.AI."
+>
+	<section class="section" style="padding-bottom:40px;">
+		<div class="container" style="max-width:780px;">
+			<div class="eyebrow"><span class="dot"></span> <a href="/partners" style="color:inherit;text-decoration:none;">Partners</a> / Press Releases</div>
+			<h1 class="h-1" style="margin:18px 0 14px;">Press releases.</h1>
+		</div>
+	</section>
+
+	<section class="section section-divider">
+		<div class="container" style="max-width:780px;">
+			<div style="display:flex;flex-direction:column;gap:16px;">
+				{releases.map((r) => (
+					<a href={r.href} class="card pr-row">
+						<div class="mono" style="font-size:11px;color:var(--ink-muted);margin-bottom:8px;">{r.date} &nbsp;·&nbsp; {r.source}</div>
+						<h3 style="margin:0 0 8px;font-size:17px;font-weight:700;color:var(--ink);line-height:1.3;">{r.headline}</h3>
+						<p class="small" style="margin:0;color:var(--ink-muted);">{r.summary}</p>
+						<div style="margin-top:12px;font-size:13px;color:var(--accent);font-weight:500;display:flex;align-items:center;gap:4px;">
+							Read release
+							<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+						</div>
+					</a>
+				))}
+			</div>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.pr-row {
+		text-decoration: none;
+		color: inherit;
+		transition: border-color 0.15s, box-shadow 0.15s;
+	}
+	.pr-row:hover {
+		border-color: var(--accent);
+		box-shadow: 0 0 0 1px var(--accent);
+	}
+</style>

@@ -95,6 +95,22 @@ const partnerTypes = [
 	</section>
 
 	<section class="section section-divider">
+		<div class="container" style="max-width:780px;">
+			<div class="eyebrow"><span class="dot"></span> News</div>
+			<h2 class="h-2" style="margin:14px 0 24px;">Press releases.</h2>
+			<a href="/partners/press-releases/carahsoft-partnership" class="card pr-row" style="display:block;text-decoration:none;color:inherit;">
+				<div class="mono" style="font-size:11px;color:var(--ink-muted);margin-bottom:8px;">April 27, 2026 &nbsp;·&nbsp; Carahsoft Technology Corp.</div>
+				<h3 style="margin:0 0 8px;font-size:17px;font-weight:700;color:var(--ink);line-height:1.3;">2Trust.AI and Carahsoft Partner to Bring AI Governance Solutions to the Public Sector</h3>
+				<p class="small" style="margin:0 0 12px;color:var(--ink-muted);">Carahsoft will serve as 2Trust.AI's Public Sector distributor, making the platform available through SEWP V, ITES-SW2, NASPO ValuePoint, and other major contract vehicles.</p>
+				<span style="font-size:13px;color:var(--accent);font-weight:500;display:flex;align-items:center;gap:4px;">
+					Read release
+					<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M3 8h10M9 4l4 4-4 4"></path></svg>
+				</span>
+			</a>
+		</div>
+	</section>
+
+	<section class="section section-divider">
 		<div class="container" style="max-width:680px;">
 			<div class="eyebrow"><span class="dot"></span> Become a partner</div>
 			<h2 class="h-2" style="margin:14px 0 16px;">Interested in partnering?</h2>
@@ -112,6 +128,13 @@ const partnerTypes = [
 </Base>
 
 <style>
+	.pr-row {
+		transition: border-color 0.15s, box-shadow 0.15s;
+	}
+	.pr-row:hover {
+		border-color: var(--accent);
+		box-shadow: 0 0 0 1px var(--accent);
+	}
 	.partner-card {
 		display: flex;
 		flex-direction: column;
