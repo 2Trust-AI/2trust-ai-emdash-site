@@ -70,6 +70,10 @@ function isActive(href: string) {
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 		<Font cssVariable="--font-display" preload />
 		<Font cssVariable="--font-body" preload />
 		<Font cssVariable="--font-mono" />
@@ -92,6 +96,17 @@ function isActive(href: string) {
 				document.documentElement.classList.toggle("dark", dark);
 			})();
 		</script>
+		{/* Cloudflare Web Analytics. Installed manually because Cloudflare's
+		    automatic injection rewrites HTML leaving an origin, and this site is
+		    served by a Worker that generates responses directly — there is
+		    nothing at the edge for it to rewrite. The token is not a secret; it
+		    ships to every visitor in the page source. */}
+		<script
+			is:inline
+			defer
+			src="https://static.cloudflareinsights.com/beacon.min.js"
+			data-cf-beacon='{"token": "222df8bb2d364803af7f8f5bdf460459"}'
+		/>
 	</head>
 	<body>
 		<EmDashBodyStart page={pageCtx} />
