@@ -4,6 +4,12 @@
 	"main": "./src/worker.ts",
 	"compatibility_date": "2026-02-24",
 	"compatibility_flags": ["nodejs_compat"],
+	// Workers Logs. Off by default, which meant this worker produced NO logs at
+	// all — no way to see an error after the fact, and nothing for `wrangler tail`
+	// to stream. Every other worker we operate has this on.
+	"observability": {
+		"enabled": true,
+	},
 	"d1_databases": [
 		{
 			"binding": "DB",
