@@ -17,6 +17,16 @@
 			// Run `wrangler d1 create my-emdash-site` and paste the real ID here for deploy
 			"database_id": "9bddc95a-f74e-4ef5-9215-87ceb530160e",
 		},
+		{
+			// LABS-95 traffic log (table page_views). Separate from the CMS database so the
+			// internal dashboard can get a read binding to logs without seeing CMS data.
+			// Apply migrations before deploying the Worker:
+			//   npx wrangler d1 migrations apply 2trust-ai-site-logs --remote
+			"binding": "LOGS",
+			"database_name": "2trust-ai-site-logs",
+			"database_id": "83a40191-0f56-474c-b47d-9d0311179b37",
+			"migrations_dir": "migrations-logs",
+		},
 	],
 	"r2_buckets": [
 		{
