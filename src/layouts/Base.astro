@@ -34,7 +34,19 @@ const {
 	content,
 } = Astro.props;
 
-const { siteTitle } = resolveBlogSiteIdentity(await getSiteSettings());
+const { siteTitle, siteTagline, siteLogo } = resolveBlogSiteIdentity(await getSiteSettings());
+// AIEO Must #7 (LABS-95): Organization JSON-LD on every page. EmDash only emits WebSite.
+const siteOrigin = "https://2trust.ai";
+const orgJsonLd = {
+	"@context": "https://schema.org",
+	"@type": "Organization",
+	"@id": `${siteOrigin}/#organization`,
+	name: siteTitle,
+	url: siteOrigin,
+	logo: siteLogo?.url ? new URL(siteLogo.url, siteOrigin).href : `${siteOrigin}/apple-touch-icon.png`,
+	description: siteTagline,
+	email: "info@2trust.ai",
+};
 const fullTitle = title.includes(siteTitle) ? title : `${title} — ${siteTitle}`;
 
 const pageCtx = createPublicPageContext({
@@ -83,6 +95,7 @@ function isActive(href: string) {
 		<script is:inline>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-W8KTRGCX');</script>
 		<!-- End Google Tag Manager -->
 		<EmDashHead page={pageCtx} />
+		<script type="application/ld+json" set:html={JSON.stringify(orgJsonLd).replace(/</g, "\\u003c")} />
 		<script is:inline>
 			(function () {
 				var c = document.cookie;
